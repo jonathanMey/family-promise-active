@@ -1,0 +1,240 @@
+:root{
+  --scBlue:#2E6DB3;
+  --scGold:#F4C56A;
+  --scPurple:#854D7E;
+  --scDPurple:#513C63;
+  --scWhite: #F2F2F2;
+}
+
+body{
+  margin:0;
+}
+
+.hidden {
+  display: none;
+}
+
+.block {
+  display: block;
+}
+
+
+section {
+  margin: 0;
+  padding: 5em 4em 5em 4em;
+}
+
+.loginHtml {
+  background: linear-gradient(to bottom right, var(--scGold),var(--scBlue),var(--scPurple),var(--scDPurple));
+  width: auto;
+  height: auto;
+  position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+}
+
+.loginBody {
+  height: 20em;
+}
+
+html {
+  background: linear-gradient(to bottom right, var(--scGold),var(--scBlue),var(--scPurple),var(--scDPurple));
+}
+
+.login-select-container {
+  position: relative;
+  width: auto;
+  height: 95vh;
+  padding: 2em 3em 1em 3em;
+  text-align: center;
+
+  .account-btns-container {
+    margin: 0;
+    width: auto;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    display: flex;
+    button {
+      background-color: transparent;
+      width: 12em;
+      margin: 0 auto 0 auto;
+      border: none;
+
+      &:hover {
+        img {
+        border: 3px solid var(--scDPurple);
+        box-shadow: 2px 2px 5px var(--scDPurple);
+        }
+        h2 {
+        text-shadow: 4px 4px 5px var(--scDPurple);
+        } 
+      }
+
+      img {
+        background-color: whitesmoke;
+        border: 2px solid grey;
+        width: auto;
+        height: 10em;
+        border-radius: 50%;
+      }
+
+      h2 {
+        width: auto;
+        opacity: .8;
+        letter-spacing: .2em;
+        color: whitesmoke;
+        font-weight: lighter;
+        font-size: 1.5em;
+      }
+    }
+  }
+  .login-brandmessage-container {
+    position: absolute;
+    bottom: 0;
+    opacity: .7;
+    h1 {
+      color: white;
+    }
+    h2 {
+      color: whitesmoke;
+      margin: 1em auto 1em auto;
+    }
+    img {
+      width: 30%;
+    }
+  }
+}
+
+.login-container {
+  background-color: var(--scBlue);
+  width: 15%;
+  height: 50%;
+  margin: 15em auto 15em auto;
+  border-radius: 1em;
+  padding: 2em 1em;
+  border: 5px solid var(--scDPurple);
+  text-align: center;
+  position: relative;
+    .goback {
+      position: absolute;
+      right:0;
+      top: 0;
+      padding: 0;
+      margin: -3em, -3em,0,0;
+      width: 2em;
+      height: 2em;
+      background-color: var(--scWhite);
+      border: 1px solid var(--scDPurple);
+      border-radius: 20%;
+      &:hover{
+        background-color: var(--scGold);
+        border: 1px solid var(--scWhite);
+      }
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: 20%;
+      }
+    }
+    .accountIcon {
+      background-color: whitesmoke;
+      width: auto;
+      height: 8em;
+      border: 4px solid var(--scDPurple);
+      border-radius: 50%;
+      margin-top: -6.5em;
+    }
+    h2 {
+      background-color: var(--scWhite);
+      color: var(--scGold);
+      border: 3px solid var(--scDPurple);
+      border-radius: 1em;
+      margin: 0 auto 0 auto;
+      padding: .5em;
+      width: fit-content;
+      display: none;
+    }
+    .loginForm {
+      width: 100%;     
+      .accountInput{
+        display: none;
+        text-align: center;
+        width: 100%;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        border-radius: 1em;
+        border-style: none;
+      }
+      .loginInput {
+        width: 92%;
+        height: 2.5em;
+        margin: 1em auto 0 auto;
+        border-radius: 1.5em;
+        padding: 0 0 0 .5em;
+        border-style: none;
+        cursor: pointer;
+      }    
+      .submitInput {
+        background-color: var(--scPurple);
+        color: white;
+        width: 100%;
+        margin: 1em 0 .5em 0;
+        border-radius: 3em;
+        border-style: none;
+        cursor: pointer;
+      }
+      .submitInput:hover {
+        background-color: white;
+        color: var(--scPurple);
+      }
+    }
+}
+
+
+
+//Window changing 
+
+@media only screen and (min-width: 650px) {
+  .account-btns-container {
+    padding: 8em 6em 3em 6em;
+  }
+}
+//select account page
+@media only screen and (max-width: 650px) {
+  .login-select-container{
+    padding: .5em;
+    .account-btns-container {
+      img {
+        margin: 1em;
+      }
+      h2{
+        display: none;
+      }
+    }
+    .login-brandmessage-container {
+      display: none;
+    }
+  }
+}
+
+//login information form
+@media only screen and (max-width: 900px) {
+  .login-container {
+    margin: 5em auto 5em auto;
+    width: auto;
+    background-color: transparent;
+    border: none;
+    img{
+      display: none;
+    }
+    h2 {
+      display: block;
+    }
+    .submitInput {
+      width: 20%;
+      height: 5em;
+    }
+  }
+}
