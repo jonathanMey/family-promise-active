@@ -422,30 +422,6 @@ All View Forms
   font-size: 1.8em;
 }
 
-.requestPickup-body .form-section .requestPickup-form .form-input input[type=submit] {
-  position: -webkit-sticky;
-  position: sticky;
-  right: 0;
-  background: var(--scBlue);
-  color: var(--scWhite);
-  font-size: .8em;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  border: 3px solid var(--scWhite);
-  margin: 0 1em 2em 0;
-  bottom: 0;
-  float: right;
-  border-radius: 2em;
-  width: 40%;
-  height: 5em;
-}
-
-.requestPickup-body .form-section .requestPickup-form .form-input input[type=submit]:hover {
-  background: var(--scWhite);
-  color: var(--scBlue);
-  border: 3px solid var(--scBlue);
-}
-
 .requestPickup-body .form-section .requestPickup-form .form-input input {
   height: 2em;
 }
