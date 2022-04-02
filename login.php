@@ -13,11 +13,12 @@
     $res = $conn->query($sql);
     $account = $_POST["account"];
     if($res) {
-      // TO DO: if the query returned no rows, print "The username you entered is not valid."
       $row = $res->fetch_assoc();
       $access = $row["accesslvl"];
+      //X debug
       //echo ''.$account.', username: '.$row["username"].'';
-      // if password in the database matches the one entered by the user ...
+      
+      // check if password in the database matches the one entered by the user
       if($account >= $row["accesslvl"]) {
         if($row['password'] == $_POST["password"]){
           // start the session and store username and access level as session variables
@@ -27,9 +28,10 @@
           $_SESSION['Accesslvl'] = $row['accesslvl'];
           $_SESSION['Account'] = $account;
           $_SESSION['UserID'] = $row["Employeeid"];  
-          echo ''.$account.', account: '.$_SESSION["Account"].' UserID: '.$_SESSION["UserID"].' Accesslevel: '.$_SESSION["Accesslvl"];
+          //X debug
+          //echo ''.$account.', account: '.$_SESSION["Account"].' UserID: '.$_SESSION["UserID"].' Accesslevel: '.$_SESSION["Accesslvl"];
 
-          // redirect to the home page	
+          // redirect to the home page after successful login	
           header("location: index.php");
         }else {
           ?><script> alert("The password you entered is not valid");</script><?php
@@ -38,6 +40,7 @@
         ?><script> alert("Permission Denied");</script><?php
       }
     } else {
+      // if the query returned no rows, print "The username you entered is not valid."
       ?><script> alert("Unable to retrieve user credetials");</script><?php
     }
   }

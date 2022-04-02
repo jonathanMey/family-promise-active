@@ -1,8 +1,10 @@
 <?php
+//Page verification
 $current = basename($_SERVER['PHP_SELF']);
 $active = basename($_SERVER['PHP_SELF']);
 include 'header.php';
 
+//ACTION: Submit edit form 
 if (isset($_GET["submitEditPickupForm"])){
   //$combinedDT = date('Y-m-d H:i:s', strtotime($_GET["cdate"]." ".$_GET["ctime"]));
   
@@ -13,7 +15,7 @@ if (isset($_GET["submitEditPickupForm"])){
   state='".$_GET["requestStateAddress"]."',
   zip='".$_GET["requestZipAddress"]."'
   WHERE PickID=".$_GET["pcode"]."";
-  //debug   
+  //X debug   
   //echo $sql;
   $conn->query($sql);
 
@@ -24,7 +26,7 @@ if (isset($_GET["submitEditPickupForm"])){
   priority='".$_GET["requestPriorityLvl"]."',
   notes='".str_replace("'","''",$_GET["requestNotes"])."'
   WHERE PickInfoID = (SELECT PickinfoID FROM Pick Where PickID=".$_GET["pcode"].") ";
-  //debug   
+  //X debug   
   //echo $sql;
   $conn->query($sql);
 
@@ -33,7 +35,7 @@ if (isset($_GET["submitEditPickupForm"])){
   phone='".$_GET["requestPhone"]."',
   email='".$_GET["requestemail"]."'
   WHERE DonorID = (SELECT DonorInfoID FROM Don d Where d.PickID=".$_GET["pcode"].")";
-  //debug   
+  //X debug   
   //echo $sql;
   $conn->query($sql);
 
@@ -41,12 +43,12 @@ if (isset($_GET["submitEditPickupForm"])){
 }
 
 
-
+//ACTION: submit Request form
 if(isset($_GET['submitRequestForm'])){
 
   $combinedDT = date('Y-m-d H:i:s', strtotime($_GET["requestDate"]." ".$_GET["requestTime"]));
   $sql = "INSERT INTO PickInfo (RequestedDateTime, numItems, multTrips, timeFrame, priority, notes) VALUES ('".$combinedDT."', '".$_GET["requestTotalItems"]."', CASE WHEN '".$_GET["requestMultTrips"]."' = 'on' THEN 1 ELSE 0 END, '".str_replace("'","''",$_GET["requestTimeFrame"])."', '".$_GET["requestPriorityLvl"]."', '".str_replace("'","''",$_GET["requestNotes"])."')";
-  //debug
+  //X debug
   //echo $sql;
   $conn->query($sql);
   $getMaxID = "SELECT MAX(PickInfoID) FROM PickInfo";
@@ -54,7 +56,7 @@ if(isset($_GET['submitRequestForm'])){
   $row = $res->fetch_assoc();
   $PickInfoID = $row["MAX(PickInfoID)"]; 
   $sql = "INSERT INTO Pick(PickinfoID, status, street, city, state, zip) VALUES ('".$PickInfoID."', 'Requested', '".$_GET["requestStreetAddress"]."', '".$_GET["requestCityAddress"]."','".$_GET["requestStateAddress"]."','".$_GET["requestZipAddress"]."')";
-  //debug
+  //X debug
   //echo $sql;
   $conn->query($sql);
   $getMaxID = "SELECT MAX(PickID) FROM Pick";
@@ -63,7 +65,7 @@ if(isset($_GET['submitRequestForm'])){
   $PickID = $row["MAX(PickID)"]; 
   //Check to see if donor exists already
   $check = "SELECT DonorID, name, phone FROM Donor WHERE name = '".$_GET["requestName"]."' AND phone = '".$_GET["requestPhone"]."'";
-  //debug
+  //X debug
   //echo $check;
   $res = $conn->query($check);
   if($res->num_rows > 0) {
@@ -72,12 +74,12 @@ if(isset($_GET['submitRequestForm'])){
   } else {
     if($_GET["requestHomeAddress"] == 1) {
       $sql = "INSERT INTO Donor(name, email, phone, street, city, state, zip) VALUES('".$_GET["requestName"]."', '".$_GET["requestEmail"]."', '".$_GET["requestPhone"]."', '".$_GET["requestStreetAddress"]."', '".$_GET["requestCityAddress"]."', '".$_GET["requestStateAddress"]."', '".$_GET["requestZipAddress"]."')";
-      //debug   
+      //X debug   
       //echo $sql;
       $conn->query($sql);
     } else {
       $sql = "INSERT INTO Donor(name, email, phone) VALUES ('".$_GET["requestName"]."', '".$_GET["requestEmail"]."', '".$_GET["requestPhone"]."')";
-      //debug   
+      //X debug   
       //echo $sql;
       $conn->query($sql);
     } 
@@ -88,7 +90,7 @@ if(isset($_GET['submitRequestForm'])){
   }
   //echo 'DonorID: '.$DonorID; 
   $sql = "INSERT INTO DonDetails(qty) VALUES('".$_GET["requestTotalItems"]."')";
-  //debug
+  //X debug
   //echo $sql;
   $conn->query($sql);
   $getMaxID = "SELECT MAX(DonDetailsID) FROM DonDetails";
@@ -97,22 +99,22 @@ if(isset($_GET['submitRequestForm'])){
   $DonDetailsID = $row["MAX(DonDetailsID)"];
   
   $sql = "INSERT INTO Don(PickID, DonorInfoID, EmpID, DonDetailsID, notes) VALUES ('".$PickID."', '".$DonorID."', '".$_SESSION["UserID"]."', '".$DonDetailsID."', '".str_replace("'","''",$_GET["requestNotes"])."')";
-  //debug   
- // echo $sql;
+  //X debug   
+  //echo $sql;
   //echo 'UserID: '.$_SESSION["UserID"];
   $conn->query($sql); 
 }
 
-
+//Retreive selected Pickup ID
 if(isset($_GET["pcode"])) {
   $sql = "SELECT p.*, i.*, r.name, r.phone, r.email FROM Pick p, PickInfo i, Don d, Donor r WHERE p.PickID ='".$_GET["pcode"]."' AND p.PickinfoID = i.PickInfoID AND d.PickID = p.PickID AND d.DonorInfoID = r.DonorID";
   // select data about the country from the country table
   $res = $conn->query($sql);
   
-  //debug 
+  //X debug 
   //echo $sql;
   
-  // call it $cdata instead of $row to help distinguish it from the results of other queries you will be running to generate the form	
+  //Store
   $pdata = $res->fetch_assoc();
  //echo $pdata["CancelledDateTime"];
  
@@ -208,7 +210,7 @@ if(isset($_GET["pcode"])) {
             //create query for potential donors
             $sql = "SELECT name, phone FROM Donor";
 
-            //debug
+            //X debug
             //echo $sql;
 
             //run the query
@@ -228,7 +230,7 @@ if(isset($_GET["pcode"])) {
             //create query for potential donors
             $sql = "SELECT name, phone FROM Donor";
 
-            //debug
+            //X debug
             //echo $sql;
 
             //run the query
@@ -246,7 +248,7 @@ if(isset($_GET["pcode"])) {
             //create query for potential donors
             $sql = "SELECT name, email FROM Donor";
 
-            //debug
+            //X debug
             //echo $sql;
 
             //run the query
@@ -328,7 +330,7 @@ if(isset($_GET["pcode"])) {
               //create query for potential donors
               $sql = "SELECT name, phone, street, zip FROM Donor";
 
-              //debug
+              //X debug
               //echo $sql;
 
               //run the query
@@ -364,7 +366,7 @@ if(isset($_GET["pcode"])) {
               //create query for potential donors
               $sql = "SELECT name, phone, street, zip, state FROM Donor";
 
-              //debug
+              //X debug
               //echo $sql;
 
               //run the query
@@ -382,7 +384,7 @@ if(isset($_GET["pcode"])) {
               //create query for potential donors
               $sql = "SELECT name, phone, street, zip, state FROM Donor";
 
-              //debug
+              //X debug
               //echo $sql;
 
               //run the query

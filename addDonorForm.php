@@ -1,8 +1,10 @@
 <?php
+//Page setup
 $current = basename($_SERVER['PHP_SELF']);
 $active = basename($_SERVER['PHP_SELF']);
 include 'header.php';
 
+//ACTION: Submit EDIT donor form
 if (isset($_GET["submitEditDonorForm"])){
   //$combinedDT = date('Y-m-d H:i:s', strtotime($_GET["cdate"]." ".$_GET["ctime"]));
   
@@ -22,12 +24,13 @@ if (isset($_GET["submitEditDonorForm"])){
   Vip=CASE WHEN '".$_GET["addDonorIP"]."' = '' THEN NULL ELSE '".$_GET["addDonorIP"]."' END,
   notes='".str_replace("'","''",$_GET["addDonorNotes"])."'
   WHERE DonorID=".$_GET["dcode"]."";
-  //debug   
+  //X debug   
   //echo $sql;
+
   $conn->query($sql);
 }
 
-
+//ACTION: submit ADD donor page
 if(isset($_GET["submitAddDonorForm"])){
     
     $sql = "INSERT INTO Donor (name, email, phone, gender, age_group, street, city, state, zip, heard, Vip, notes)  
@@ -44,22 +47,22 @@ if(isset($_GET["submitAddDonorForm"])){
     CASE WHEN '".$_GET["addDonorIP"]."' = '' THEN NULL ELSE '".$_GET["addDonorIP"]."' END, 
     CASE WHEN '".$_GET["addDonorNotes"]."' = '' THEN NULL ELSE '".$_GET["addDonorNotes"]."' END)";
    
-    //debug   
+    //X debug   
     //echo $sql;
 
     $conn->query($sql);
   }
 
-
+// Retrieve selected donor id
 if(isset($_GET["dcode"])) {
   $sql = "SELECT * FROM Donor WHERE DonorID='".$_GET["dcode"]."'";
   // select data about the country from the country table
   $res = $conn->query($sql);
   
-  //debug 
+  //X debug 
   //echo $sql;
 
-  // call it $cdata instead of $row to help distinguish it from the results of other queries you will be running to generate the form	
+  //Store donor ID	
   $ddata = $res->fetch_assoc();
 }
 ?>
@@ -72,12 +75,7 @@ if(isset($_GET["dcode"])) {
       <h2>DONOR INFORMATION FORM</h2>
       <hr>
     </div>
-
-    
     <div class="addForm-input">
-
-    
-    
       <?php
 
       if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
@@ -105,7 +103,7 @@ if(isset($_GET["dcode"])) {
             //create query for potential donors
             $sql = "SELECT name FROM Donor";
 
-            //debug
+            //X debug
             //echo $sql;
 
             //run the query
@@ -123,7 +121,7 @@ if(isset($_GET["dcode"])) {
             //create query for potential donors
             $sql = "SELECT email, name FROM Donor";
 
-            //debug
+            //X debug
             //echo $sql;
 
             //run the query
@@ -141,7 +139,7 @@ if(isset($_GET["dcode"])) {
             //create query for potential donors
             $sql = "SELECT name, phone FROM Donor";
 
-            //debug
+            //X debug
             //echo $sql;
 
             //run the query
@@ -151,8 +149,7 @@ if(isset($_GET["dcode"])) {
             }
             echo '</datalist>';
 
-        // gender
-        
+        //gender
           if($ddata['gender'] == 'M') {
             echo '<label for="addDonorMale">Male:</label>';
             echo '<input type="radio" id="addDonorMale" name="addDonorGender" value="M" checked><br>';
@@ -250,7 +247,7 @@ if(isset($_GET["dcode"])) {
             //create query for potential donors
             $sql = "SELECT name, street FROM Donor";
 
-            //debug
+            //X debug
             //echo $sql;
 
             //run the query
@@ -267,7 +264,7 @@ if(isset($_GET["dcode"])) {
             //create query for potential donors
             $sql = "SELECT phone, zip FROM Donor";
 
-            //debug
+            //X debug
             //echo $sql;
 
             //run the query
@@ -284,7 +281,7 @@ if(isset($_GET["dcode"])) {
             //create query for potential donors
             $sql = "SELECT name, state FROM Donor";
 
-            //debug
+            //X debug
             //echo $sql;
 
             //run the query
@@ -319,9 +316,9 @@ if(isset($_GET["dcode"])) {
 
 
 
-    //named submit button so we can tell when the form has been submitted
-
+    //named submit button Submitting
     if (isset($_GET["dcode"])){
+      //Admin & Employee
       if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
         
       } else {
@@ -329,7 +326,7 @@ if(isset($_GET["dcode"])) {
       }    
     }
     else{
-      //named submit button so we can tell when the form has been submitted
+      //named submit button for ADDING a donor
       echo '<input type="submit" class="stickySubmit" value="Add Donor" name="submitAddDonorForm">';
     }
     ?>

@@ -1,8 +1,10 @@
 <?php
+//page verification
 $current = basename($_SERVER['PHP_SELF']);
 $active = basename($_SERVER['PHP_SELF']);
 include 'header.php';
 
+//ACTION: Submit Edit User form
 if (isset($_GET["submitEditUserForm"])){
   //$combinedDT = date('Y-m-d H:i:s', strtotime($_GET["cdate"]." ".$_GET["ctime"]));
   
@@ -14,12 +16,12 @@ if (isset($_GET["submitEditUserForm"])){
   role='".$_GET["addUserRole"]."',
   accesslvl='".$_GET["addUserAccesslvl"]."'
   WHERE Employeeid=".$_GET["ecode"]."";
-  //debug   
+  //X debug   
   //echo $sql;
   $conn->query($sql);
 }
 
-
+//ACTION: Submit Add User From
 if(isset($_GET["submitAddUserForm"])){
     
     $sql = "INSERT INTO Employee(fname,lname,username,password,role,accesslvl) 
@@ -29,21 +31,20 @@ if(isset($_GET["submitAddUserForm"])){
     '".$_GET["addUserPassword"]."',
     '".$_GET["addUserRole"]."',
     '".$_GET["addUserAccesslvl"]."')";
-    //debug   
+    //X debug   
     //echo $sql;
     $conn->query($sql);
   }
 
-
+// Retrieve ID information for selected employee
 if(isset($_GET["ecode"])) {
   $sql = "SELECT * FROM Employee WHERE Employeeid='".$_GET["ecode"]."'";
-  // select data about the country from the country table
+  // select data 
   $res = $conn->query($sql);
-  
-  //debug 
+  //X debug 
   //echo $sql;
 
-  // call it $cdata instead of $row to help distinguish it from the results of other queries you will be running to generate the form	
+  // store selected employee id
   $edata = $res->fetch_assoc();
 }
 ?>
@@ -74,7 +75,7 @@ if(isset($_GET["ecode"])) {
         echo '<label for="addUserPassword">Password</label><br>';
         echo '<input type="text" id="addUserPassword" name="addUserPassword" value="'.$edata["password"].'" placeholder="Password..." maxlength="80" required><br>';
         ?>
-        </fieldset>
+      </fieldset>
       <fieldset class="accessInfo">
 
         <legend>Access Details</legend>
@@ -139,13 +140,13 @@ if(isset($_GET["ecode"])) {
       </fieldset>
     </div>
     <?php
-    //named submit button so we can tell when the form has been submitted
+    //decide which form submit to show
     if (isset($_GET["ecode"])){
-      //named submit button so we can tell when the form has been submitted
+      //named submit button for EDITING selected employee
       echo '<input type="submit" class="stickySubmit" value="Update '.$edata["fname"].'" name="submitEditUserForm">';
     }
     else{
-      //named submit button so we can tell when the form has been submitted
+      //named submit button for ADDING selected employee
       echo '<input type="submit" class="stickySubmit" value="Add User" name="submitAddUserForm">';
     }
     ?>

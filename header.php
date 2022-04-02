@@ -1,3 +1,5 @@
+
+
 <?php 
 include "checkuser.php"; 
 include 'schedule.php';
@@ -7,8 +9,10 @@ include 'schedule.php';
     <head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <?php
+        // create the arrays for titles and address in the proper order
         $pageTitles = array("Family Promise Home","Add Donation Form","Add Donor Form","Create Report","Request Pickup Form","Edit Donation Info","Edit Donor Info","View Donations","View Donors","Report Preview","Pickup Schedule","Edit Users", "View Users", "View Pickups", "Change Status");
         $allLinkAddresses = array("index.php","addDonationForm.php","addDonorForm.php","addReportForm.php","addPickupForm.php","editDonation.php","editDonor.php","viewDonationsPage.php","viewDonorsPage.php","viewReportPage.php","viewSchedulePage.php","addUserForm.php","viewUsersPage.php", "viewPickupPage.php", "changeStatus.php");
+        // Display custom page titles of current page
         for ($i=0;$i<count($pageTitles);$i++){
           if($allLinkAddresses[$i] == $current){
             echo '<title>'.$pageTitles[$i].'</title>';
@@ -29,6 +33,7 @@ include 'schedule.php';
     <nav>
       <img id="mobileNavExit" class="mobile-menu-exit" onclick="hide_mobileMenu()" src="Images/exitIcon.png" alt="Menu exit">
       <?php
+      //display and give user proper link addresses accourding to access lvl
         //admin level access = 1
         if($_SESSION["Account"] == 1){
         $linkaddresses = array("index.php","addDonationForm.php","addDonorForm.php","addReportForm.php","addPickupForm.php","viewDonationsPage.php","viewDonorsPage.php","viewUsersPage.php", "viewPickupPage.php", "logout.php","viewReportPage.php","editDonation.php","editDonor.php","addUserForm.php");
@@ -73,7 +78,8 @@ include 'schedule.php';
           echo '<li style="float:right"><img src="Images/volunteerIcon.png" alt="Volunteer"></li>';
         }
         echo '</ul>';
-
+        
+        // Double check that user is allowed on current page
         $allowed = false;
         for($i=0;$i<count($linkaddresses);$i++){
           if($current == $linkaddresses[$i]){
