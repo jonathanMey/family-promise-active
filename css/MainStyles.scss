@@ -218,15 +218,22 @@ All View Forms
     background-color: var(--scWhite);
     opacity: .8;
     .viewTable {
+      display: block;
+      height: 17em;
       border: 5px solid var(--scGold);
       width: auto;
       margin: 0 auto 0 auto;
+      overflow-y: scroll;
       a{
         font-size: .6;
         text-align: center;
         display: block;
         padding: .2em;
         text-decoration: none;
+      }
+      thead {
+        //display: block;
+        position: sticky; top: 0; z-index: 1;
       }
       .headerRow {
         background-color: var(--scDPurple);
@@ -237,6 +244,9 @@ All View Forms
           text-align: center;
           padding: .4em;
         }
+      }
+      tbody {
+        overflow-y: scroll;
       }
       tr.high {
           background-color: #ff00007e;

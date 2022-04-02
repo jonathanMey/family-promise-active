@@ -96,7 +96,7 @@ if(isset($_GET["dcode"])) {
           echo '<legend>New Donor information</legend>';
         }
         //name
-        echo '<label for="addDonorName">Name:</label><br>';
+        echo '<label for="addDonorName">*Name:</label><br>';
         echo '<input type="text" id="addDonorName" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorNames").Id))" name="addDonorName" value="'.$ddata["name"].'" placeholder="FirstName LastName..." list="potentialDonorNames" maxlength="25"><br>';
         
         echo '<datalist id="potentialDonorNames">';
@@ -132,8 +132,8 @@ if(isset($_GET["dcode"])) {
           echo '</datalist>';
 
         //phone
-        echo '<label for="addDonorPhone">Phone Number:</label><br>';
-        echo '<input type="tel" id="addDonorPhone" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorsPhone").Id))" name="addDonorPhone" value="'.$ddata["phone"].'" placeholder="Enter as: 865-123-4567" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" list="potentialDonorsPhone" maxlength="20"><br>';
+        echo '<label for="addDonorPhone">*Phone Number:</label><br>';
+        echo '<input type="tel" id="addDonorPhone" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorsPhone").Id))" name="addDonorPhone" value="'.$ddata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialDonorsPhone" maxlength="20"><br>';
         
           echo '<datalist id="potentialDonorsPhone">';
             //create query for potential donors
@@ -292,7 +292,7 @@ if(isset($_GET["dcode"])) {
             echo '</datalist>';
             
             //important
-            echo '<label for="addDonorIP">Flag Inportant</label>';
+            echo '<label for="addDonorIP">Flag Important</label>';
             if($ddata["Vip"] == 1) {
             echo '<input type="checkbox" id="addDonorIP" name="addDonorIP" onclick="check_vip()" value="1" checked><br>';
             } else if($ddata["Vip"] == 0) {

@@ -237,9 +237,12 @@ All View Forms
 }
 
 .viewTable-section .viewTable-container .viewTable {
+  display: block;
+  height: 17em;
   border: 5px solid var(--scGold);
   width: auto;
   margin: 0 auto 0 auto;
+  overflow-y: scroll;
 }
 
 .viewTable-section .viewTable-container .viewTable a {
@@ -248,6 +251,13 @@ All View Forms
   display: block;
   padding: .2em;
   text-decoration: none;
+}
+
+.viewTable-section .viewTable-container .viewTable thead {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .viewTable-section .viewTable-container .viewTable .headerRow {
@@ -260,6 +270,10 @@ All View Forms
 .viewTable-section .viewTable-container .viewTable .headerRow td {
   text-align: center;
   padding: .4em;
+}
+
+.viewTable-section .viewTable-container .viewTable tbody {
+  overflow-y: scroll;
 }
 
 .viewTable-section .viewTable-container .viewTable tr.high {

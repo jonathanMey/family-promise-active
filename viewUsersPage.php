@@ -61,7 +61,10 @@ if(isset($_GET["submitAddUserForm"])){
   if($res) {
     $n = 0;
     echo '<table class="viewTable" id="viewTable" name="viewUsersTable">';
+    echo '<thead>';
     echo '<tr class="headerRow"><th>First Name</th><th>Last Name</th><th>Role</th><th>Access Level</th></tr>';
+    echo '</thead>';
+    echo '<tbody>';
     while ($row = $res->fetch_assoc()) {
       if($n%2==0){
         echo '<tr class="evenRow"><td><a href="addUserForm.php?ecode='.$row["Employeeid"].'">'.utf8_encode(str_replace(chr(146),"'",$row["fname"])).'</a></td><td><a href="addUserForm.php?ecode='.$row["Employeeid"].'">'.utf8_encode(str_replace(chr(146),"'",$row["lname"])).'</a></td><td><a href="addUserForm.php?ecode='.$row["Employeeid"].'">'.utf8_encode(str_replace(chr(146),"'",$row["role"])).'</a></td><td><a href="addUserForm.php?ecode='.$row["Employeeid"].'">'.utf8_encode(str_replace(chr(146),"'",$row["accesslvl"])).'</a></td></tr>';
@@ -70,6 +73,7 @@ if(isset($_GET["submitAddUserForm"])){
       }
       $n++;
     }
+    echo '</tbody>';
     echo '</table>';
   }
   // close connection

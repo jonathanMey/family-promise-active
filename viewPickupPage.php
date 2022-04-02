@@ -61,10 +61,12 @@ if(isset($_GET["submitAddPickupForm"])){
   if($res) {
     $n = 0;
     echo '<table class="viewTable" id="viewPickupTable" name="viewPickupTable">';
+    echo '<thead>';
     echo '<tr class="headerRow"><th>Name</th><th>Street</th><th>Status</th><th>Priority Level</th><th>Multiple Trips</th></tr>';
+    echo '</thead>';
     $priority;
     $trips;
-    
+    echo '<tbody>';
     while ($row = $res->fetch_assoc()) {
       if($row["priority"] == 1) {
         $priority = "High";
@@ -86,6 +88,7 @@ if(isset($_GET["submitAddPickupForm"])){
       }
       $n++;
     }
+    echo '</tbody>';
     echo '</table>';
   }
   // close connection

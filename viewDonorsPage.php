@@ -61,7 +61,10 @@ if(isset($_GET["submitAddDonorsForm"])){
   if($res) {
     $n = 0;
     echo '<table class="viewTable" id="viewDonorsTable" name="viewDonorsTable">';
+    echo '<thead>';
     echo '<tr class="headerRow"><th>Name</th><th>Age Group</th><th>Phone Number</th><th>Zipcode</th></tr>';
+    echo '</thead>';
+    echo '<tbody>';
     while ($row = $res->fetch_assoc()) {
       if($n%2==0){
         echo '<tr class="evenRow"><td><a href="addDonorForm.php?dcode='.$row["DonorID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["name"])).'</a></td><td><a href="addDonorForm.php?dcode='.$row["DonorID"].'">'.$row["Agegroup"].'</a></td><td><a href="addDonorForm.php?dcode='.$row["DonorID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["phone"])).'</a></td><td><a href="addDonorForm.php?dcode='.$row["DonorID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["zip"])).'</a></td></tr>';
@@ -70,6 +73,7 @@ if(isset($_GET["submitAddDonorsForm"])){
       }
       $n++;
     }
+    echo '</tbody>';
     echo '</table>';
   }
   // close connection
