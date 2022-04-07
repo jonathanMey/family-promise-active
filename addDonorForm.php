@@ -33,30 +33,30 @@ if (isset($_GET["submitEditDonorForm"])){
 //ACTION: submit ADD donor page
 if(isset($_GET["submitAddDonorForm"])){
     
-    $sql = "INSERT INTO Donor (name, email, phone, gender, age_group, street, city, state, zip, heard, Vip, notes)  
-    VALUES(CASE WHEN '".$_GET["addDonorName"]."' = '' THEN NULL ELSE '".$_GET["addDonorName"]."' END, 
-    CASE WHEN '".$_GET["addDonorEmail"]."' = '' THEN NULL ELSE '".$_GET["addDonorEmail"]."' END, 
-    CASE WHEN '".$_GET["addDonorPhone"]."' = '' THEN NULL ELSE '".$_GET["addDonorPhone"]."' END, 
-    CASE WHEN '".$_GET["addDonorGender"]."' = '' THEN NULL ELSE '".$_GET["addDonorGender"]."' END, 
-    CASE WHEN '".$_GET["addDonorAge"]."' = '' THEN NULL ELSE '".$_GET["addDonorAge"]."' END, 
-    CASE WHEN '".$_GET["addDonorStreet"]."' = '' THEN NULL ELSE '".$_GET["addDonorStreet"]."' END, 
-    CASE WHEN '".$_GET["addDonorCity"]."' = '' THEN NULL ELSE '".$_GET["addDonorCity"]."' END,
-    CASE WHEN '".$_GET["addDonorState"]."' = '' THEN NULL ELSE '".$_GET["addDonorState"]."' END, 
-    CASE WHEN '".$_GET["addDonorZip"]."' = '' THEN NULL ELSE '".$_GET["addDonorZip"]."' END, 
-    CASE WHEN '".$_GET["addDonorHeard"]."' = '' THEN NULL ELSE '".$_GET["addDonorHeard"]."' END, 
-    CASE WHEN '".$_GET["addDonorIP"]."' = '' THEN NULL ELSE '".$_GET["addDonorIP"]."' END, 
-    CASE WHEN '".$_GET["addDonorNotes"]."' = '' THEN NULL ELSE '".$_GET["addDonorNotes"]."' END)";
-   
-    //X debug   
-    //echo $sql;
+  $sql = "INSERT INTO Donor (name, email, phone, gender, age_group, street, city, state, zip, heard, Vip, notes)  
+  VALUES(CASE WHEN '".$_GET["addDonorName"]."' = '' THEN NULL ELSE '".$_GET["addDonorName"]."' END, 
+  CASE WHEN '".$_GET["addDonorEmail"]."' = '' THEN NULL ELSE '".$_GET["addDonorEmail"]."' END, 
+  CASE WHEN '".$_GET["addDonorPhone"]."' = '' THEN NULL ELSE '".$_GET["addDonorPhone"]."' END, 
+  CASE WHEN '".$_GET["addDonorGender"]."' = '' THEN NULL ELSE '".$_GET["addDonorGender"]."' END, 
+  CASE WHEN '".$_GET["addDonorAge"]."' = '' THEN NULL ELSE '".$_GET["addDonorAge"]."' END, 
+  CASE WHEN '".$_GET["addDonorStreet"]."' = '' THEN NULL ELSE '".$_GET["addDonorStreet"]."' END, 
+  CASE WHEN '".$_GET["addDonorCity"]."' = '' THEN NULL ELSE '".$_GET["addDonorCity"]."' END,
+  CASE WHEN '".$_GET["addDonorState"]."' = '' THEN NULL ELSE '".$_GET["addDonorState"]."' END, 
+  CASE WHEN '".$_GET["addDonorZip"]."' = '' THEN NULL ELSE '".$_GET["addDonorZip"]."' END, 
+  CASE WHEN '".$_GET["addDonorHeard"]."' = '' THEN NULL ELSE '".$_GET["addDonorHeard"]."' END, 
+  CASE WHEN '".$_GET["addDonorIP"]."' = '' THEN NULL ELSE '".$_GET["addDonorIP"]."' END, 
+  CASE WHEN '".$_GET["addDonorNotes"]."' = '' THEN NULL ELSE '".$_GET["addDonorNotes"]."' END)";
+  
+  //X debug   
+  //echo $sql;
 
-    $conn->query($sql);
-  }
+  $conn->query($sql);
+}
 
 // Retrieve selected donor id
 if(isset($_GET["dcode"])) {
   $sql = "SELECT * FROM Donor WHERE DonorID='".$_GET["dcode"]."'";
-  // select data about the country from the country table
+  // select data about the donor from the donor table
   $res = $conn->query($sql);
   
   //X debug 
@@ -69,268 +69,321 @@ if(isset($_GET["dcode"])) {
 
 
 <section class="addForm-section">
-  <form class="add-form" action="addDonorForm.php" name="addDonorForm" method="get">
+  <div class="add-form">
     <div class="addForm-header">
       <img class="addFormHeader-logo" src="Images/horizontalLogo.png" alt="Family Promise Logo">
       <h2>DONOR INFORMATION FORM</h2>
       <hr>
     </div>
-    <div class="addForm-input">
-      <?php
-
-      if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
-        echo '<fieldset class="info" name="DonorInfo" disabled>';
-      } else {
-        echo '<fieldset class="info" name="DonorInfo">';
-      }
-      if (isset($_GET["dcode"])){ 	
-      echo '<input type="hidden" name="dcode" value="'.$_GET["dcode"].'">';
-      }
-      ?>
+    <?php
+    //Initial Information form
+    echo '<form class="addForm-check" action="addDonorForm.php" name="addDonorFormCheck" method="get">';
       
-      <?php
-        
-        if(isset($_GET["dcode"])) {
-          echo '<legend>' .$ddata["name"].' information</legend>';
-        } else {
-          echo '<legend>New Donor information</legend>';
+      //name
+      echo '<label for="addDonorName">*Name:</label><br>';
+      echo '<input type="text" id="requestName" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorNames").Id))" name="requestName" value="'.$ddata["name"].'" placeholder="FirstName LastName..." list="potentialDonorNames" maxlength="25"><br>';
+      
+      echo '<datalist id="potentialDonorNames">';
+          //create query for potential donors
+          $sql = "SELECT name FROM Donor";
+
+          //X debug
+          //echo $sql;
+
+          //run the query
+          $res = $conn->query($sql);
+          while ($row = $res->fetch_assoc()) {
+            echo '<option value="'.$row["name"].'"></option>';
+          }
+      echo '</datalist>';
+
+      //phone
+      echo '<label for="addDonorPhone">*Phone Number:</label><br>';
+      echo '<input type="tel" id="requestPhone" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorsPhone").Id))" name="requestPhone" value="'.$ddata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialDonorsPhone" maxlength="20"><br>';
+ 
+      echo '<datalist id="potentialDonorsPhone">';
+        //create query for potential donors
+        $sql = "SELECT name, phone FROM Donor";
+
+        //X debug
+        //echo $sql;
+
+        //run the query
+        $res = $conn->query($sql);
+        while ($row = $res->fetch_assoc()) {
+          echo '<option value="'.$row["phone"].'" label="'.$row["name"].'"></option>';
         }
-        //name
-        echo '<label for="addDonorName">*Name:</label><br>';
-        echo '<input type="text" id="addDonorName" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorNames").Id))" name="addDonorName" value="'.$ddata["name"].'" placeholder="FirstName LastName..." list="potentialDonorNames" maxlength="25"><br>';
+      echo '</datalist>';      
+      
+      //submit
+      echo '<input type="submit" class="regularSubmit" value="Continue" name="submitContinueDonorForm">';
+
+    echo '</form>';
+    
+    //Continuation of the form
+    if(isset($_GET["submitContinueDonorForm"])){
+      $inputrecieved = TRUE;
+    }
+      //check search
+      $check = "SELECT DonorID, name, phone FROM Donor WHERE name = '".$_GET["requestName"]."' AND phone = '".$_GET["requestPhone"]."'";
+      $res = $conn->query($check);
+
+      //X debug 
+      //echo $check;
+
+      if($row = $res->fetch_assoc()) {
+        $existingDonorID = $row["DonorID"];
+        echo $existingDonorID;
+        echo '<form id="addFormFound" class="addForm-found" action="addDonorForm.php" name="addDonorFormFound" method="get">';
+        echo '<input type="hidden" name="dcode" value="'.$existingDonorID.'">';
+        echo '<label for="autofillDonor">Donor Found!</label>';
+        echo '<input type="submit" id="autofillDonor" class="regularSubmit" value="Autofill" name="submitAutofillDonorForm">';
+        echo '</form>';
+
+        //retrieve info
+        if(isset($_GET["dcode"])) {
+          $sql = "SELECT * FROM Donor WHERE DonorID='".$_GET["dcode"]."'";
+          // select data about the donor from the donor table
+          $res = $conn->query($sql);
+          
+          //X debug 
+          //echo $sql;
+  
+          //Store donor ID	
+          $ddata = $res->fetch_assoc();
+        }
+      }
+    
+    if(isset($_GET["submitAutofillDonorForm"])) {  
+      echo '<form class="addForm-input" action="addDonorForm.php" name="addDonorForm" method="get">';
+      echo '<div class="addForm-input">';
+
+        if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
+          echo '<fieldset class="info" name="DonorInfo" disabled>';
+        } else {
+          echo '<fieldset class="info" name="DonorInfo">';
+        }
+
+
+
+        if (isset($_GET["dcode"])){ 	
+        echo '<input type="hidden" name="dcode" value="'.$_GET["dcode"].'">';
+        }
+        //start of the donor information form
+          if(isset($_GET["dcode"])) {
+            echo '<legend>' .$ddata["name"].' information</legend>';
+          } else {
+            echo '<legend>New Donor information</legend>';
+          }
+
+          //name
+          echo '<label for="addDonorName">*Name:</label><br>';
+          echo '<input type="text" id="addDonorName" name="addDonorName" value="'.$ddata["name"].'" placeholder="FirstName LastName..." list="potentialDonorNames" maxlength="25"><br>';
         
-        echo '<datalist id="potentialDonorNames">';
-            //create query for potential donors
-            $sql = "SELECT name FROM Donor";
+          //phone
+          echo '<label for="addDonorPhone">*Phone Number:</label><br>';
+          echo '<input type="tel" id="addDonorPhone" name="addDonorPhone" value="'.$ddata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialDonorsPhone" maxlength="20"><br>';
 
-            //X debug
-            //echo $sql;
+          //email
+          echo '<label for="addDonorEmail">Email Address:</label><br>';
+          echo '<input type="email" id="addDonorEmail" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorsEmail").Id))" name="addDonorEmail" value="'.$ddata["email"].'" placeholder="johndoe@gmail.com..." list="potentialDonorsEmail" maxlength="50"><br>';
+          
+            echo '<datalist id="potentialDonorsEmail">';
+              //create query for potential donors
+              $sql = "SELECT email, name FROM Donor";
 
-            //run the query
-            $res = $conn->query($sql);
-            while ($row = $res->fetch_assoc()) {
-              echo '<option value="'.$row["name"].'"></option>';
-            }
-          echo '</datalist>';
-        
-        //email
-        echo '<label for="addDonorEmail">Email Address:</label><br>';
-        echo '<input type="email" id="addDonorEmail" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorsEmail").Id))" name="addDonorEmail" value="'.$ddata["email"].'" placeholder="johndoe@gmail.com..." list="potentialDonorsEmail" maxlength="50"><br>';
-        
-          echo '<datalist id="potentialDonorsEmail">';
-            //create query for potential donors
-            $sql = "SELECT email, name FROM Donor";
+              //X debug
+              //echo $sql;
 
-            //X debug
-            //echo $sql;
-
-            //run the query
-            $res = $conn->query($sql);
-            while ($row = $res->fetch_assoc()) {
-              echo '<option value="'.$row["email"].'" label="'.$row["name"].'"></option>';
-            }
-          echo '</datalist>';
-
-        //phone
-        echo '<label for="addDonorPhone">*Phone Number:</label><br>';
-        echo '<input type="tel" id="addDonorPhone" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorsPhone").Id))" name="addDonorPhone" value="'.$ddata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialDonorsPhone" maxlength="20"><br>';
-        
-          echo '<datalist id="potentialDonorsPhone">';
-            //create query for potential donors
-            $sql = "SELECT name, phone FROM Donor";
-
-            //X debug
-            //echo $sql;
-
-            //run the query
-            $res = $conn->query($sql);
-            while ($row = $res->fetch_assoc()) {
-              echo '<option value="'.$row["phone"].'" label="'.$row["name"].'"></option>';
-            }
+              //run the query
+              $res = $conn->query($sql);
+              while ($row = $res->fetch_assoc()) {
+                echo '<option value="'.$row["email"].'" label="'.$row["name"].'"></option>';
+              }
             echo '</datalist>';
 
-        //gender
-          if($ddata['gender'] == 'M') {
-            echo '<label for="addDonorMale">Male:</label>';
-            echo '<input type="radio" id="addDonorMale" name="addDonorGender" value="M" checked><br>';
-            } else {
-            echo '<label for="addDonorMale">Male:</label>';
-            echo '<input type="radio" id="addDonorMale" name="addDonorGender" value="M"><br>'; 
-            }
-            if($ddata['gender'] == 'F') {
-              echo '<label for="addDonorFemale">Female:</label>';
-              echo '<input type="radio" id="addDonorMale" name="addDonorGender" value="F" checked><br>';
+
+          //gender
+            if($ddata['gender'] == 'M') {
+              echo '<label for="addDonorMale">Male:</label>';
+              echo '<input type="radio" id="addDonorMale" name="addDonorGender" value="M" checked><br>';
               } else {
-              echo '<label for="addDonorFemale">Female:</label>';
-              echo '<input type="radio" id="addDonorFemale" name="addDonorGender" value="F"><br>'; 
-            }
+              echo '<label for="addDonorMale">Male:</label>';
+              echo '<input type="radio" id="addDonorMale" name="addDonorGender" value="M"><br>'; 
+              }
+              if($ddata['gender'] == 'F') {
+                echo '<label for="addDonorFemale">Female:</label>';
+                echo '<input type="radio" id="addDonorMale" name="addDonorGender" value="F" checked><br>';
+                } else {
+                echo '<label for="addDonorFemale">Female:</label>';
+                echo '<input type="radio" id="addDonorFemale" name="addDonorGender" value="F"><br>'; 
+              }
 
           //age group
-          echo '<label for="addDonorAge">Age group:</label><br>';
-          echo '<select id="addDonorAge" name="addDonorAge">';
-          if($ddata['age_group'] == '') {
-          echo '<option value="" label="" selected></option>';
-          } else {
-            echo '<option value="" label=""></option>';
-          }
-          if($ddata['age_group'] == 1) {
-          echo '<option value="1" label="0-20" selected></option>';
-          } else {
-            echo '<option value="1" label="0-20"></option>';
-          }
-          if($ddata['age_group'] == 2) {
-          echo '<option value="2" label="20-30" selected></option>';
-          } else {
-          echo '<option value="2" label="20-30"></option>';
-          }
-          if($ddata['age_group'] == 3) {
-          echo '<option value="3" label="30-40" selected></option>';
-          } else {
-          echo '<option value="3" label="30-40"></option>';
-          } 
-          if($ddata['age_group'] == 4) {
-          echo '<option value="4" label="40-60" selected></option>';
-          } else {
-          echo '<option value="4" label="40-60"></option>';
-          }
-          if($ddata['age_group'] == 5) {
-          echo '<option value="5" label="60-70" selected></option>';
-          } else {
-          echo '<option value="5" label="60-70"></option>';
-          } 
-          if($ddata['age_group'] == 6) {
-          echo '<option value="6" label="70+" selected></option>';
-          } else {
-          echo '<option value="6" label="70+"></option>';
-          }
-          echo '</select><br>';
+            echo '<label for="addDonorAge">Age group:</label><br>';
+            echo '<select id="addDonorAge" name="addDonorAge">';
+            if($ddata['age_group'] == '') {
+            echo '<option value="" label="" selected></option>';
+            } else {
+              echo '<option value="" label=""></option>';
+            }
+            if($ddata['age_group'] == 1) {
+            echo '<option value="1" label="0-20" selected></option>';
+            } else {
+              echo '<option value="1" label="0-20"></option>';
+            }
+            if($ddata['age_group'] == 2) {
+            echo '<option value="2" label="20-30" selected></option>';
+            } else {
+            echo '<option value="2" label="20-30"></option>';
+            }
+            if($ddata['age_group'] == 3) {
+            echo '<option value="3" label="30-40" selected></option>';
+            } else {
+            echo '<option value="3" label="30-40"></option>';
+            } 
+            if($ddata['age_group'] == 4) {
+            echo '<option value="4" label="40-60" selected></option>';
+            } else {
+            echo '<option value="4" label="40-60"></option>';
+            }
+            if($ddata['age_group'] == 5) {
+            echo '<option value="5" label="60-70" selected></option>';
+            } else {
+            echo '<option value="5" label="60-70"></option>';
+            } 
+            if($ddata['age_group'] == 6) {
+            echo '<option value="6" label="70+" selected></option>';
+            } else {
+            echo '<option value="6" label="70+"></option>';
+            }
+            echo '</select><br>';
 
           //heard
-          echo '<label for="addDonorHeard">Heard about us through:</label><br>';
-          echo '<select id="addDonorHeard" name="addDonorHeard">';
-          if($ddata['heard'] == '') {
-          echo '<option value="" label="" selected></option>';
-          } else {
-            echo '<option value="" label=""></option>';
-          }
-          if($ddata['heard'] == 1) {
-          echo '<option value="1" label="Church" selected></option>';
-          } else {
-            echo '<option value="1" label="Church"></option>';
-          }
-          if($ddata['heard'] == 2) {
-          echo '<option value="2" label="Friends" selected></option>';
-          } else {
-          echo '<option value="2" label="Friends"></option>';
-          }
-          if($ddata['heard'] == 3) {
-          echo '<option value="3" label="Online" selected></option>';
-          } else {
-          echo '<option value="3" label="Online"></option>';
-          } 
-          if($ddata['heard'] == 4) {
-          echo '<option value="4" label="Newspaper" selected></option>';
-          } else {
-          echo '<option value="4" label="Newspaper"></option>';
-          }
-          if($ddata['heard'] == 5) {
-          echo '<option value="5" label="Other" selected></option>';
-          } else {
-          echo '<option value="5" label="Other"></option>';
-          }
-          echo '</select><br>' ;
-   
-        echo '<label for="addDonorStreet">Street:</label><br>';
-        echo '<input type="text" id="addDonorStreet" name="addDonorStreet" onkeyup="autofill_input(this.getAttribute("Id"),potentialDonors)" value="'.$ddata["street"].'" placeholder="Enter Street..." list="potentialDonors" maxlength="80"><br>';
-
-           echo '<datalist id="potentialDonors">';
-            //create query for potential donors
-            $sql = "SELECT name, street FROM Donor";
-
-            //X debug
-            //echo $sql;
-
-            //run the query
-            $res = $conn->query($sql);
-            while ($row = $res->fetch_assoc()) {
-              echo '<option value="'.$row["street"].'" label="'.$row["name"].'"></option>';
-            }
-            echo '</datalist>';
-
-        echo '<label for="addDonorZip">Zipcode:</label><br>';
-        echo '<input type="number" id="addDonorZip" name="addDonorZip" onkeyup="autofill_input(this.getAttribute("Id"),potentialDonors)" value="'.$ddata["zip"].'" placeholder="Enter Zipcode..." list="potentialDonors" maxlength="10"><br>';
-       
-        echo '<datalist id="potentialDonors">';
-            //create query for potential donors
-            $sql = "SELECT phone, zip FROM Donor";
-
-            //X debug
-            //echo $sql;
-
-            //run the query
-            $res = $conn->query($sql);
-            while ($row = $res->fetch_assoc()) {
-              echo '<option value="'.$row["zip"].'" label="'.$row["phone"].'"></option>';
-            }
-            echo '</datalist>';
-
-        echo '<label for="addDonorState">State:</label><br>';
-        echo '<input type="text" id="addDonorState" name="addDonorState" onkeyup="autofill_input(this.getAttribute("Id"),potentialDonors)" value="'.$ddata["state"].'" placeholder="Enter State Abreviation ..." list="potentialDonors" maxlength="2"><br>';
-
-        echo '<datalist id="potentialDonors">';
-            //create query for potential donors
-            $sql = "SELECT name, state FROM Donor";
-
-            //X debug
-            //echo $sql;
-
-            //run the query
-            $res = $conn->query($sql);
-            while ($row = $res->fetch_assoc()) {
-              echo '<option value="'.$row["state"].'" label="'.$row["name"].'"></option>';
-            }
-            echo '</datalist>';
-            
-            //important
-            echo '<label for="addDonorIP">Flag Important</label>';
-            if($ddata["Vip"] == 1) {
-            echo '<input type="checkbox" id="addDonorIP" name="addDonorIP" onclick="check_vip()" value="1" checked><br>';
-            } else if($ddata["Vip"] == 0) {
-            echo '<input type="checkbox" id="addDonorIP" name="addDonorIP" onclick="check_vip()" value="0"><br>';
+            echo '<label for="addDonorHeard">Heard about us through:</label><br>';
+            echo '<select id="addDonorHeard" name="addDonorHeard">';
+            if($ddata['heard'] == '') {
+            echo '<option value="" label="" selected></option>';
             } else {
-            echo '<input type="checkbox" id="addDonorIP" name="addDonorIP" onclick="check_vip()" value=""><br>';
+              echo '<option value="" label=""></option>';
             }
+            if($ddata['heard'] == 1) {
+            echo '<option value="1" label="Church" selected></option>';
+            } else {
+              echo '<option value="1" label="Church"></option>';
+            }
+            if($ddata['heard'] == 2) {
+            echo '<option value="2" label="Friends" selected></option>';
+            } else {
+            echo '<option value="2" label="Friends"></option>';
+            }
+            if($ddata['heard'] == 3) {
+            echo '<option value="3" label="Online" selected></option>';
+            } else {
+            echo '<option value="3" label="Online"></option>';
+            } 
+            if($ddata['heard'] == 4) {
+            echo '<option value="4" label="Newspaper" selected></option>';
+            } else {
+            echo '<option value="4" label="Newspaper"></option>';
+            }
+            if($ddata['heard'] == 5) {
+            echo '<option value="5" label="Other" selected></option>';
+            } else {
+            echo '<option value="5" label="Other"></option>';
+            }
+            echo '</select><br>' ;
+    
+          echo '<label for="addDonorStreet">Street:</label><br>';
+          echo '<input type="text" id="addDonorStreet" name="addDonorStreet" onkeyup="autofill_input(this.getAttribute("Id"),potentialDonors)" value="'.$ddata["street"].'" placeholder="Enter Street..." list="potentialDonors" maxlength="80"><br>';
 
+            echo '<datalist id="potentialDonors">';
+              //create query for potential donors
+              $sql = "SELECT name, street FROM Donor";
 
-            //notes
-            $formatnotes = str_ireplace(array("<br />","<br>","<br/>","<br />","&lt;br /&gt;","&lt;br/&gt;","&lt;br&gt;"),"\n",$ddata["notes"]);
-            echo '<label for="addDonorNotes">DONOR NOTES</label><br>';          
-            echo '<textarea class="notes" id="addDonorNotes" name="addDonorNotes" rows="20" cols="30" placeholder="Enter Special Pickup instructions or directions..." maxlength="255">'.$formatnotes.'</textarea><br>';
-      
-      
-           echo '</fieldset>';
-      ?>
-      
-      
-      <?php
+              //X debug
+              //echo $sql;
 
+              //run the query
+              $res = $conn->query($sql);
+              while ($row = $res->fetch_assoc()) {
+                echo '<option value="'.$row["street"].'" label="'.$row["name"].'"></option>';
+              }
+              echo '</datalist>';
 
-
-    //named submit button Submitting
-    if (isset($_GET["dcode"])){
-      //Admin & Employee
-      if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
+          echo '<label for="addDonorZip">Zipcode:</label><br>';
+          echo '<input type="number" id="addDonorZip" name="addDonorZip" onkeyup="autofill_input(this.getAttribute("Id"),potentialDonors)" value="'.$ddata["zip"].'" placeholder="Enter Zipcode..." list="potentialDonors" maxlength="10"><br>';
         
-      } else {
-        echo '<input type="submit" class="stickySubmit" value="Update '.$ddata["name"].'" name="submitEditDonorForm">';
-      }    
+          echo '<datalist id="potentialDonors">';
+              //create query for potential donors
+              $sql = "SELECT phone, zip FROM Donor";
+
+              //X debug
+              //echo $sql;
+
+              //run the query
+              $res = $conn->query($sql);
+              while ($row = $res->fetch_assoc()) {
+                echo '<option value="'.$row["zip"].'" label="'.$row["phone"].'"></option>';
+              }
+              echo '</datalist>';
+
+          echo '<label for="addDonorState">State:</label><br>';
+          echo '<input type="text" id="addDonorState" name="addDonorState" onkeyup="autofill_input(this.getAttribute("Id"),potentialDonors)" value="'.$ddata["state"].'" placeholder="Enter State Abreviation ..." list="potentialDonors" maxlength="2"><br>';
+
+          echo '<datalist id="potentialDonors">';
+              //create query for potential donors
+              $sql = "SELECT name, state FROM Donor";
+
+              //X debug
+              //echo $sql;
+
+              //run the query
+              $res = $conn->query($sql);
+              while ($row = $res->fetch_assoc()) {
+                echo '<option value="'.$row["state"].'" label="'.$row["name"].'"></option>';
+              }
+              echo '</datalist>';
+              
+              //important
+              echo '<label for="addDonorIP">Flag Important</label>';
+              if($ddata["Vip"] == 1) {
+              echo '<input type="checkbox" id="addDonorIP" name="addDonorIP" onclick="check_vip()" value="1" checked><br>';
+              } else if($ddata["Vip"] == 0) {
+              echo '<input type="checkbox" id="addDonorIP" name="addDonorIP" onclick="check_vip()" value="0"><br>';
+              } else {
+              echo '<input type="checkbox" id="addDonorIP" name="addDonorIP" onclick="check_vip()" value=""><br>';
+              }
+
+
+              //notes
+              $formatnotes = str_ireplace(array("<br />","<br>","<br/>","<br />","&lt;br /&gt;","&lt;br/&gt;","&lt;br&gt;"),"\n",$ddata["notes"]);
+              echo '<label for="addDonorNotes">DONOR NOTES</label><br>';          
+              echo '<textarea class="notes" id="addDonorNotes" name="addDonorNotes" rows="20" cols="30" placeholder="Enter Special Pickup instructions or directions..." maxlength="255">'.$formatnotes.'</textarea><br>';
+        
+        
+            echo '</fieldset>';
+        ?>
+      </div>  
+      <?php
+      //named submit button Submitting
+      if (isset($_GET["dcode"])){
+        //Admin & Employee
+        if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
+          
+        } else {
+          echo '<input type="submit" class="stickySubmit" value="Update '.$ddata["name"].'" name="submitEditDonorForm">';
+        }    
+      }
+      else{
+        //named submit button for ADDING a donor
+        echo '<input type="submit" class="stickySubmit" value="Add Donor" name="submitAddDonorForm">';
+      }
+      
+      echo '</form>';
     }
-    else{
-      //named submit button for ADDING a donor
-      echo '<input type="submit" class="stickySubmit" value="Add Donor" name="submitAddDonorForm">';
-    }
-    ?>
-  </form>
+      ?>
+  </div>
 </section>
 
 

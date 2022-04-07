@@ -13,6 +13,7 @@ function hide_mobileMenu() {
   nav.classList.remove('menu-btn');
 }
 
+
 //autofill function for datalists
 function autofill_requestName() {
   var input, filter, datalist, option, i, txtValue;
