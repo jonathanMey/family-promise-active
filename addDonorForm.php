@@ -81,12 +81,12 @@ if(isset($_GET["dcode"])) {
       echo '<form class="addForm-check" action="addDonorForm.php" name="addDonorFormCheck" method="get">';
         
         //name
-        echo '<label for="addDonorName">*Name:</label><br>';
-        echo '<input type="text" id="requestName" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorNames").Id))" name="requestName" value="'.$ddata["name"].'" placeholder="FirstName LastName..." list="potentialDonorNames" maxlength="25" required><br>';
+        echo '<label for="requestDName">*Name:</label><br>';
+        echo '<input type="text" id="requestDName" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorNames").Id))" name="requestDName" value="'.$ddata["name"].'" placeholder="FirstName LastName..." list="potentialDonorNames" maxlength="25" required><br>';
         
         echo '<datalist id="potentialDonorNames">';
             //create query for potential donors
-            $sql = "SELECT name FROM Donor";
+            $sql = "SELECT name, phone FROM Donor";
 
             //X debug
             //echo $sql;
@@ -94,13 +94,13 @@ if(isset($_GET["dcode"])) {
             //run the query
             $res = $conn->query($sql);
             while ($row = $res->fetch_assoc()) {
-              echo '<option value="'.$row["name"].'"></option>';
+              echo '<option value="'.$row["name"].'" label="'.$row["phone"].'"></option>';
             }
         echo '</datalist>';
 
         //phone
-        echo '<label for="addDonorPhone">*Phone Number:</label><br>';
-        echo '<input type="tel" id="requestPhone" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorsPhone").Id))" name="requestPhone" value="'.$ddata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialDonorsPhone" maxlength="20" required><br>';
+        echo '<label for="requestDPhone">*Phone Number:</label><br>';
+        echo '<input type="tel" id="requestDPhone" onkeyup="autofill_input(this.getAttribute("Id"),document.getElementById("potentialDonorsPhone").Id))" name="requestDPhone" value="'.$ddata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialDonorsPhone" maxlength="20" required><br>';
   
         echo '<datalist id="potentialDonorsPhone">';
           //create query for potential donors
@@ -122,11 +122,10 @@ if(isset($_GET["dcode"])) {
       echo '</form>';
     }
     //Continuation of the form
-
-      $name = $_GET["requestName"];
-      $phone = $_GET["requestPhone"];
+      $name = $_GET["requestDName"];
+      $phone = $_GET["requestDPhone"];
       //check search
-      $check = "SELECT DonorID, name, phone FROM Donor WHERE name = '".$_GET["requestName"]."' AND phone = '".$_GET["requestPhone"]."'";
+      $check = "SELECT DonorID, name, phone FROM Donor WHERE name = '".$_GET["requestDName"]."' AND phone = '".$_GET["requestDPhone"]."'";
       $res = $conn->query($check);
 
       //X debug 
@@ -300,6 +299,7 @@ if(isset($_GET["dcode"])) {
             }
             echo '</select><br>' ;
     
+          //street
           echo '<label for="addDonorStreet">Street:</label><br>';
           echo '<input type="text" id="addDonorStreet" name="addDonorStreet" onkeyup="autofill_input(this.getAttribute("Id"),potentialDonors)" value="'.$ddata["street"].'" placeholder="Enter Street..." list="potentialDonors" maxlength="80"><br>';
 
@@ -317,6 +317,42 @@ if(isset($_GET["dcode"])) {
               }
               echo '</datalist>';
 
+          //city
+          echo '<label for="addDonorCity">City:</label><br>';
+          echo '<input type="text" id="addDonorCity" name="addDonorCity" onkeyup="autofill_input(this.getAttribute("Id"),potentialDonors)" value="'.$ddata["city"].'" placeholder="Enter City Name ..." list="potentialDonors" maxlength="50"><br>';
+
+          echo '<datalist id="potentialDonors">';
+              //create query for potential donors
+              $sql = "SELECT name, city, state FROM Donor";
+
+              //X debug
+              //echo $sql;
+
+              //run the query
+              $res = $conn->query($sql);
+              while ($row = $res->fetch_assoc()) {
+                echo '<option value="'.$row["city"].'" label="'.$row["name"].'\n'.$row["state"].'"></option>';
+              }
+              echo '</datalist>';
+
+          //state
+          echo '<label for="addDonorState">State:</label><br>';
+          echo '<input type="text" id="addDonorState" name="addDonorState" onkeyup="autofill_input(this.getAttribute("Id"),potentialDonors)" value="'.$ddata["state"].'" placeholder="Enter State Abreviation ..." list="potentialDonors" maxlength="2"><br>';
+
+          echo '<datalist id="potentialDonors">';
+              //create query for potential donors
+              $sql = "SELECT name, city, state FROM Donor";
+
+              //X debug
+              //echo $sql;
+
+              //run the query
+              $res = $conn->query($sql);
+              while ($row = $res->fetch_assoc()) {
+                echo '<option value="'.$row["state"].'" label="'.$row["name"].'\n'.$row["city"].'"></option>';
+              }
+              echo '</datalist>';
+          //zip
           echo '<label for="addDonorZip">Zipcode:</label><br>';
           echo '<input type="number" id="addDonorZip" name="addDonorZip" onkeyup="autofill_input(this.getAttribute("Id"),potentialDonors)" value="'.$ddata["zip"].'" placeholder="Enter Zipcode..." list="potentialDonors" maxlength="10"><br>';
         
@@ -334,22 +370,7 @@ if(isset($_GET["dcode"])) {
               }
               echo '</datalist>';
 
-          echo '<label for="addDonorState">State:</label><br>';
-          echo '<input type="text" id="addDonorState" name="addDonorState" onkeyup="autofill_input(this.getAttribute("Id"),potentialDonors)" value="'.$ddata["state"].'" placeholder="Enter State Abreviation ..." list="potentialDonors" maxlength="2"><br>';
-
-          echo '<datalist id="potentialDonors">';
-              //create query for potential donors
-              $sql = "SELECT name, state FROM Donor";
-
-              //X debug
-              //echo $sql;
-
-              //run the query
-              $res = $conn->query($sql);
-              while ($row = $res->fetch_assoc()) {
-                echo '<option value="'.$row["state"].'" label="'.$row["name"].'"></option>';
-              }
-              echo '</datalist>';
+          
               
               //important
               echo '<label for="addDonorIP">Flag Important</label>';

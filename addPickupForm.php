@@ -38,10 +38,7 @@ if (isset($_GET["submitEditPickupForm"])){
   //X debug   
   //echo $sql;
   $conn->query($sql);
-
-
 }
-
 
 //ACTION: submit Request form
 if(isset($_GET['submitRequestForm'])){
@@ -124,343 +121,499 @@ if(isset($_GET["pcode"])) {
 
 <div class="requestPickup-body">
   <section class="form-section">
-    <form class="requestPickup-form" action="addPickupForm.php" name="requestForm" method="get">
-    <div class="form-header">
-      <div class="time-container">
-      <?php 
-        if(isset($_GET["pcode"])) {
-          echo '<h3 class="datelabel">'.$pdata["status"].' ON:</h3>'; 
-          if($pdata["status"] == Requested) {
-            $date =  date("Y-m-d", strtotime($pdata["RequestedDateTime"]));
-            $time =  date("H:i", strtotime($pdata["RequestedDateTime"]));
-            echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
-            echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
-          } else if($pdata["status"] == Scheduled) {
-            $date =  date("Y-m-d", strtotime($pdata["ScheduleDateTime"]));
-            $time =  date("H:i", strtotime($pdata["ScheduleDateTime"]));
-            echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
-            echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
-          } else if($pdata["status"] == Pickedup) {
-            $date =  date("Y-m-d", strtotime($pdata["PickupDateTime"]));
-            $time =  date("H:i", strtotime($pdata["PickupDateTime"]));
-            echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
-            echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
-          } else if($pdata["status"] == Completed) {
-            $date =  date("Y-m-d", strtotime($pdata["DropOffDateTime"]));
-            $time =  date("H:i", strtotime($pdata["DropOffDateTime"]));
-            echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
-            echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
-          } else if($pdata["status"] == Cancelled) {
-            $date =  date("Y-m-d", strtotime($pdata["CancelledDateTime"]));
-            $time =  date("H:i", strtotime($pdata["CancelledDateTime"]));
-            echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
-            echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
-          }
-        } else {
-          echo '<h3 class="datelabel">TODAYS DATE</h3>';          
-          echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.date('Y-m-d').'"><br>';
-          echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.date('H:i').'">';
-        } 
-      ?>
+    <div class="requestPickup-form" action="addPickupForm.php" name="requestForm" method="get">
+      <div class="form-header">
+        <div class="time-container">
+        <?php 
+          if(isset($_GET["pcode"])) {
+            echo '<h3 class="datelabel">'.$pdata["status"].' ON:</h3>'; 
+            if($pdata["status"] == Requested) {
+              $date =  date("Y-m-d", strtotime($pdata["RequestedDateTime"]));
+              $time =  date("H:i", strtotime($pdata["RequestedDateTime"]));
+              echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
+              echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
+            } else if($pdata["status"] == Scheduled) {
+              $date =  date("Y-m-d", strtotime($pdata["ScheduleDateTime"]));
+              $time =  date("H:i", strtotime($pdata["ScheduleDateTime"]));
+              echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
+              echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
+            } else if($pdata["status"] == Pickedup) {
+              $date =  date("Y-m-d", strtotime($pdata["PickupDateTime"]));
+              $time =  date("H:i", strtotime($pdata["PickupDateTime"]));
+              echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
+              echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
+            } else if($pdata["status"] == Completed) {
+              $date =  date("Y-m-d", strtotime($pdata["DropOffDateTime"]));
+              $time =  date("H:i", strtotime($pdata["DropOffDateTime"]));
+              echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
+              echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
+            } else if($pdata["status"] == Cancelled) {
+              $date =  date("Y-m-d", strtotime($pdata["CancelledDateTime"]));
+              $time =  date("H:i", strtotime($pdata["CancelledDateTime"]));
+              echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
+              echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
+            }
+          } else {
+            echo '<h3 class="datelabel">TODAYS DATE</h3>';          
+            echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.date('Y-m-d').'"><br>';
+            echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.date('H:i').'">';
+          } 
+        ?>
+        </div>
+        <img src="Images/stackedLogo.png" alt="Family Promise Logo">
+        <h2>DONATION PICK-UP INFORMATION FORM</h2>
+        <hr>
       </div>
-      <img src="Images/stackedLogo.png" alt="Family Promise Logo">
-      <h2>DONATION PICK-UP INFORMATION FORM</h2>
-      <hr>
-    </div>
-    <div class="form-input">
+      <div class="form-input">
+        <?php      
+        if (!isset($_GET["pcode"])) { 
+          echo '<form action="addPickupForm.php" name="requestFormCheck" method="get">';
+            //name
+            echo '<label for="requestPName">Name</label><br>';
+            echo '<input type="text" id="requestPName" onkeyup="autofill_requestName()" name="requestPName" value="'.$pdata["name"].'" placeholder="Enter Donor Name..." list="potentialDonors" maxlength="25" required><br>';
+              echo '<datalist id="potentialDonors">';
+              //create query for potential donors
+              $sql = "SELECT name, phone FROM Donor";
 
-    <?php
-      
-    if (isset($_GET["pcode"])){ 	
-      if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 3 || $_SESSION['Accesslvl'] == 1) {
-        echo '<fieldset class="Status" disabled>';
-      } else {
-        echo '<fieldset class="Status">';
-        echo '<label><a href="changeStatus.php?pcode='.$_GET["pcode"].'">Change Status</a></label>';
-      }
-    
-        
+              //X debug
+              //echo $sql;
 
-      
-        echo '<legend>Status: '.$pdata["status"].'</legend>';
-
-      
-      echo '</fieldset>';
-    }
-
-    if (isset($_GET["pcode"])){ 
-      if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
-        echo '<fieldset class="contactInfo" disabled>';
-      } else {
-        echo '<fieldset class="contactInfo">';
-      }
-    } else {
-      echo '<fieldset class="contactInfo">';
-    }
-
-      if (isset($_GET["pcode"])){ 	
-      echo '<input type="hidden" name="pcode" value="'.$_GET["pcode"].'">';
-      }
-      
-        echo '<legend> Contact Information </legend>';
-        echo '<label for="requestName">Name</label><br>';
-        echo '<input type="text" id="requestName" onkeyup="autofill_requestName()" name="requestName" value="'.$pdata["name"].'" placeholder="Enter Donor Name..." list="potentialDonors" maxlength="25" required><br>';
-          echo '<datalist id="potentialDonors">';
-          
-            //create query for potential donors
-            $sql = "SELECT name, phone FROM Donor";
-
-            //X debug
-            //echo $sql;
-
-            //run the query
-            $res = $conn->query($sql);
-            
-            while ($row = $res->fetch_assoc()) {
-              echo '<option value="'.$row["name"].'" label="'.$row["phone"].'"></option>';
+              //run the query
+              $res = $conn->query($sql);
               
-            }
-          
-          echo '</datalist>';
-          
-        echo '<label for="requestPhone">Phone</label><br>';
-        echo '<input type="tel" id=requestPhone onkeyup="autofill_requestPhone()" name="requestPhone" value="'.$pdata["phone"].'" placeholder="Enter as: 865-123-4567" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" list="potentialPhone" required><br>';
-          echo '<datalist id="potentialPhone">';
-          
-            //create query for potential donors
-            $sql = "SELECT name, phone FROM Donor";
+              while ($row = $res->fetch_assoc()) {
+                echo '<option value="'.$row["name"].'" label="'.$row["phone"].'"></option>';
+              }
+            echo '</datalist>';
 
-            //X debug
-            //echo $sql;
+            //phone  
+            echo '<label for="requestPPhone">Phone</label><br>';
+            echo '<input type="tel" id=requestPPhone onkeyup="autofill_requestPhone()" name="requestPPhone" value="'.$pdata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialPhone" required><br>';
+              echo '<datalist id="potentialPhone">';
+                //create query for potential donors
+                $sql = "SELECT name, phone FROM Donor";
 
-            //run the query
-            $res = $conn->query($sql);
-            while ($row = $res->fetch_assoc()) {
-              echo '<option value="'.$row["phone"].'" label="'.$row["name"].'"></option>';
-            }
+                //X debug
+                //echo $sql;
+
+                //run the query
+                $res = $conn->query($sql);
+                while ($row = $res->fetch_assoc()) {
+                  echo '<option value="'.$row["phone"].'" label="'.$row["name"].'"></option>';
+                }
+              
+            echo '</datalist>';
+
+            //submit
+            echo '<input type="submit" class="regularSubmit" value="Continue" name="submitContinueRequestForm">';
+          echo '</form>';
+        }     
+
+        //continuation of the request form
+        $dpname = $_GET["requestPName"];
+        $dpphone = $_GET["requestPPhone"];  
+        //check search
+        $check = "SELECT DonorID, name, phone FROM Donor WHERE name = '".$_GET["requestPName"]."' AND phone = '".$_GET["requestPPhone"]."'";
+        $res = $conn->query($check);
+
+        //X debug 
+        //echo $check;
+
+        if($row = $res->fetch_assoc()) {
+          $existingDonorPID = $row["DonorID"];
+          echo '<form id="requestFormFound" class="requestForm-found" action="addPickupForm.php" name="addPickupFormFound" method="get">';
+            echo '<input type="hidden" name="dpcode" value="'.$existingDonorPID.'">';
+            echo '<label for="autofillPickup">Donor Found! </label>';
+            echo '<input type="submit" id="autofillPickup" class="regularSubmit" value="Autofill" name="submitAutofillPickupForm">';
+          echo '</form>'; 
+        }
+          //retrieve info
+        if(isset($_GET["dpcode"])) {
+          $sql = "SELECT * FROM Donor WHERE DonorID='".$_GET["dpcode"]."'";
+          // select data about the donor from the donor table
+          $res = $conn->query($sql);
           
-        echo '</datalist>';
+          //X debug 
+          //echo $sql;
+
+          //Store donor ID	
+          $ddata = $res->fetch_assoc();
+        }
+          
         
-        echo '<label for="requestEmail">Email</label><br>';
-        echo '<input type="email" id=requestEmail onkeyup="autofill_requestEmail()" name="requestEmail" value="'.$pdata["email"].'" placeholder="Enter Email..." list="potentialEmail"><br>';
-          echo '<datalist id="potentialEmail">';
-          
-            //create query for potential donors
-            $sql = "SELECT name, email FROM Donor";
-
-            //X debug
-            //echo $sql;
-
-            //run the query
-            $res = $conn->query($sql);
-            while ($row = $res->fetch_assoc()) {
-              echo '<option value="'.$row["email"].'" label="'.$row["name"].'"></option>';
+        //rest of the form
+        if(isset($_GET["submitAutofillPickupForm"]) || isset($_GET["pcode"]) || isset($_GET["submitContinueRequestForm"])) {  
+          echo '<form action="addPickupForm.php" name="requestForm" method="get">';  
+          //start if the request Form
+          if (isset($_GET["pcode"])){ 	
+            if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 3 || $_SESSION['Accesslvl'] == 1) {
+              echo '<fieldset class="Status" disabled>';
+            } else {
+              echo '<fieldset class="Status">';
+              echo '<label><a href="changeStatus.php?pcode='.$_GET["pcode"].'">Change Status</a></label>';
             }
-          
-        echo '</datalist>';
-       
-      echo '</fieldset>';
-      if(!isset($_GET["pcode"])) {
-        echo '<fieldset class="numItemsForm">';
-        echo '<legend>Number of Items to Pickup</legend>';
-          echo '<label for="numLargeItems"># Large items</label>';
-          echo '<input type="number" id="numLargeItems" name="requestLargeItems" onchange="calculate_requestTotalItems()" min="0" max="50" step="1" value="0"><br>';
-          echo '<label for="numMediumItems"># Medium items</label>';
-          echo '<input type="number" id="numMediumItems" name="requestMediumItems" onchange="calculate_requestTotalItems()" min="0" max="50" step="1" value="0"><br>';
-          echo '<label for="numSmallItems"># Small items</label>';
-          echo '<input type="number" id="numSmallItems" name="requestSmallItems" onchange="calculate_requestTotalItems()" min="0" max="50" step="1" value="0"><br><hr>';
-      } 
+              echo '<legend>Status: '.$pdata["status"].'</legend>';
+            echo '</fieldset>';
+          }
 
-      if (isset($_GET["pcode"])){ 
-        if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
-          echo '<label for="numTotalItems"># Total Items</label><br>';
-          echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" max="150" step="1" value="'.$pdata["numItems"].'" required disabled><br><hr>';
-        } else {
-          echo '<label for="numTotalItems"># Total Items</label><br>';
-          echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" max="150" step="1" value="'.$pdata["numItems"].'" required><br><hr>';
-        }
-      } else {
-        echo '<label for="numTotalItems"># Total Items</label><br>';
-        echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" max="150" step="1" value="'.$pdata["numItems"].'" required><br><hr>';
-      }  
-      
-      
-      if(!isset($_GET["pcode"])) {  
-        echo '<label for="requestMultTrips">Multiple Trips</label>';     
-        echo '<input type="checkbox" id="requestMultTrips" name="requestMultTrips"><br>';
-        echo '</fieldset>';
-      }
-      
-      ?>
+          if (isset($_GET["pcode"])){ 
+            if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
+              echo '<fieldset class="contactInfo" disabled>';
+            } else {
+              echo '<fieldset class="contactInfo">';
+            }
+          } else {
+            echo '<fieldset class="contactInfo">';
+          }
 
-      <?php
-      if (isset($_GET["pcode"])){ 
-        if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
-          echo '<fieldset class="contactInfo" disabled>';
-        } else {
-          echo '<fieldset class="contactInfo">';
-        }
-      } else {
-        echo '<fieldset class="contactInfo">';
-      }
-      echo '<label for="requestTimeFrame">TimeFrame</label><br>';
-      echo '<textarea id="requestTimeFrame" name="requestTimeFrame" rows="2" cols="30"  placeholder="(By friday) (Whenever) (On Date)" maxlength="255" required>'.$pdata["timeFrame"].'</textarea><br>';
-      echo '</fieldset>';
-
-      
-      if (isset($_GET["pcode"])){ 
-        if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
-          echo '<fieldset class="contactInfo" disabled>';
-        } else {
-          echo '<fieldset class="contactInfo">';
-        }
-      } else {
-        echo '<fieldset class="contactInfo">';
-      }
-      if(!isset($_GET["pcode"])) { 
-        echo '<label for="requestHomeAddress">Home Address?</label><br>';    
-        echo '<input type="checkbox" id="requestHomeAddress" name="requestHomeAddress" onclick="check_HomeAddress()"><br>';
-      }
-
-        echo '<legend>Address of Pickup</legend>';
-        echo '<label for="requestStreetAddress">Street</label><br>';
-        echo '<input type="text" id="requestStreetAddress" name="requestStreetAddress" onkeyup="autofill_requestStreetAddress()" value="'.$pdata["street"].'" placeholder="Enter Street..." list="potentialStreetAddress" maxlength="80" required><br>';
-          echo '<datalist id="potentialStreetAddress"><br>';
-           
-              //create query for potential donors
-              $sql = "SELECT name, phone, street, zip FROM Donor";
-
-              //X debug
-              //echo $sql;
-
-              //run the query
-              $res = $conn->query($sql);
-              while ($row = $res->fetch_assoc()) {
-                echo '<option value="'.$row["street"].'" label="'.$row["name"].', '.$row["zip"].'"></option>';
-              }
+            if (isset($_GET["pcode"])){ 	
+            echo '<input type="hidden" name="pcode" value="'.$_GET["pcode"].'">';
+            }
             
-          echo '</datalist>';
+              echo '<legend> Contact Information </legend>';
 
-        echo '<label for="requestCityAddress">City</label><br>';
-        echo '<input type="text" id="requestCityAddress" name="requestCityAddress" onkeyup="autofill_requestCityAddress()" value="'.$pdata["city"].'" placeholder="Enter City..." list="potentialCityAddress" maxlength="20" required><br>';
-          echo '<datalist id="potentialCityAddress">';
+              //contact information
+              if(isset($_GET["pcode"])) {
+                //name
+                echo '<label for="requestName">Name</label><br>';
+                echo '<input type="text" id="requestName" onkeyup="autofill_requestName()" name="requestName" value="'.$pdata["name"].'" placeholder="Enter Donor Name..." list="potentialDonors" maxlength="25" required><br>';
+                
+                //phone  
+                echo '<label for="requestPhone">Phone</label><br>';
+                echo '<input type="tel" id="requestPhone" onkeyup="autofill_requestPhone()" name="requestPhone" value="'.$pdata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialPhone" required><br>';
+                
+                //email
+                echo '<label for="requestEmail">Email</label><br>';
+                echo '<input type="email" id="requestEmail" onkeyup="autofill_requestEmail()" name="requestEmail" value="'.$pdata["email"].'" placeholder="Enter Email..." list="potentialEmail"><br>';
+                  echo '<datalist id="potentialEmail">';
+                  
+                    //create query for potential donors
+                    $sql = "SELECT name, email FROM Donor";
+
+                    //X debug
+                    //echo $sql;
+
+                    //run the query
+                    $res = $conn->query($sql);
+                    while ($row = $res->fetch_assoc()) {
+                      echo '<option value="'.$row["email"].'" label="'.$row["name"].'"></option>';
+                    }
+                  
+                echo '</datalist>';
+              } else if(isset($_GET["dpcode"])) {
+                //name
+                echo '<label for="requestName">Name</label><br>';
+                echo '<input type="text" id="requestName" name="requestName" value="'.$ddata["name"].'" placeholder="Enter Donor Name..." list="potentialDonors" maxlength="25" required><br>';
+                
+                //phone  
+                echo '<label for="requestPhone">Phone</label><br>';
+                echo '<input type="tel" id="requestPhone" name="requestPhone" value="'.$ddata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialPhone" maxlength="20" required><br>';
+                
+                //email
+                echo '<label for="requestEmail">Email</label><br>';
+                echo '<input type="email" id="requestEmail" name="requestEmail" value="'.$ddata["email"].'" placeholder="Enter Email..." list="potentialEmail"><br>';
+              } else {
+                //name
+                echo '<label for="requestName">Name</label><br>';
+                echo '<input type="text" id="requestName" name="requestName" value="'.$dpname.'" placeholder="Enter Donor Name..." list="potentialDonors" maxlength="25" required><br>';
+                
+                //phone  
+                echo '<label for="requestPhone">Phone</label><br>';
+                echo '<input type="tel" id="requestPhone" name="requestPhone" value="'.$dpphone.'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialPhone" maxlength="20" required><br>';
+                
+                //email
+                echo '<label for="requestEmail">Email</label><br>';
+                echo '<input type="email" id="requestEmail" name="requestEmail" value="'.$ddata["email"].'" placeholder="Enter Email..." list="potentialEmail"><br>';
+              }
+            echo '</fieldset>';
             
-              //create query for potential donors
-              $sql = "SELECT name, phone, city, street, zip, state FROM Donor";
-
-              //debug
-              //echo $sql;
-
-              //run the query
-              $res = $conn->query($sql);
-              while ($row = $res->fetch_assoc()) {
-                echo '<option value="'.$row["city"].'" label="'.$row["name"].', '.$row["zip"].'"></option>';
+            if (isset($_GET["pcode"])){ 
+              if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
+                echo '<fieldset class="contactInfo" disabled>';
+              } else {
+                echo '<fieldset class="contactInfo">';
               }
+            } else {
+              echo '<fieldset class="contactInfo">';
+            }
+              //time frame
+              echo '<label for="requestTimeFrame">TimeFrame</label><br>';
+              echo '<textarea id="requestTimeFrame" name="requestTimeFrame" rows="2" cols="30"  placeholder="(By friday) (Whenever) (On Date)" maxlength="255" required>'.$pdata["timeFrame"].'</textarea><br>';
+            echo '</fieldset>';
+
+            if (isset($_GET["pcode"])){ 
+              if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
+                echo '<fieldset class="contactInfo" disabled>';
+              } else {
+                echo '<fieldset class="contactInfo">';
+              }
+            } else {
+              echo '<fieldset class="contactInfo">';
+            }
+
+              if (!isset($_GET["dpcode"])) {
+                //ishomeAddress
+                if(!isset($_GET["pcode"])) { 
+                  echo '<label for="requestHomeAddress">Home Address?</label><br>';    
+                  echo '<input type="checkbox" id="requestHomeAddress" name="requestHomeAddress" onclick="check_HomeAddress()"><br>';
+                }
+              } 
+              if(!isset($_GET["dpcode"])) {
+                //Address Information
+                echo '<legend>Address of Pickup</legend>';
+                //street
+                echo '<label for="requestStreetAddress">Street</label><br>';
+                echo '<input type="text" id="requestStreetAddress" name="requestStreetAddress" onkeyup="autofill_requestStreetAddress()" value="'.$pdata["street"].'" placeholder="Enter Street..." list="potentialStreetAddress" maxlength="80" required><br>';
+                  echo '<datalist id="potentialStreetAddress"><br>';
+                  
+                    //create query for potential donors
+                    $sql = "SELECT name, phone, street, zip FROM Donor";
+
+                    //X debug
+                    //echo $sql;
+
+                    //run the query
+                    $res = $conn->query($sql);
+                    while ($row = $res->fetch_assoc()) {
+                      echo '<option value="'.$row["street"].'" label="'.$row["name"].', '.$row["zip"].'"></option>';
+                    }                 
+                  echo '</datalist>';
+
+                //city
+                echo '<label for="requestCityAddress">City</label><br>';
+                echo '<input type="text" id="requestCityAddress" name="requestCityAddress" onkeyup="autofill_requestCityAddress()" value="'.$pdata["city"].'" placeholder="Enter City..." list="potentialCityAddress" maxlength="20" required><br>';
+                  echo '<datalist id="potentialCityAddress">';
+                    
+                    //create query for potential donors
+                    $sql = "SELECT name, phone, city, street, zip, state FROM Donor";
+
+                    //debug
+                    //echo $sql;
+
+                    //run the query
+                    $res = $conn->query($sql);
+                    while ($row = $res->fetch_assoc()) {
+                      echo '<option value="'.$row["city"].'" label="'.$row["name"].', '.$row["zip"].'"></option>';
+                    } 
+                  echo '</datalist>';
             
-          echo '</datalist>';
-    
-        echo '<label for="requestStateAddress">State</label><br>';
-        echo '<input type="text" id="requestStateAddress" name="requestStateAddress" onkeyup="autofill_requestStateAddress()" value="'.$pdata["state"].'" placeholder="Enter State..." list="potentialStateAddress" maxlength="2" required><br>';
-          echo '<datalist id="potentialStateAddress">';
-          
-              //create query for potential donors
-              $sql = "SELECT name, phone, street, zip, state FROM Donor";
+                //state
+                echo '<label for="requestStateAddress">State</label><br>';
+                echo '<input type="text" id="requestStateAddress" name="requestStateAddress" onkeyup="autofill_requestStateAddress()" value="'.$pdata["state"].'" placeholder="Enter State..." list="potentialStateAddress" maxlength="2" required><br>';
+                  echo '<datalist id="potentialStateAddress">';
+                  
+                    //create query for potential donors
+                    $sql = "SELECT name, phone, street, zip, state FROM Donor";
 
-              //X debug
-              //echo $sql;
+                    //X debug
+                    //echo $sql;
 
-              //run the query
-              $res = $conn->query($sql);
-              while ($row = $res->fetch_assoc()) {
-                echo '<option value="'.$row["state"].'" label="'.$row["name"].', '.$row["zip"].'"></option>';
+                    //run the query
+                    $res = $conn->query($sql);
+                    while ($row = $res->fetch_assoc()) {
+                      echo '<option value="'.$row["state"].'" label="'.$row["name"].', '.$row["zip"].'"></option>';
+                    }
+                  echo '</datalist>';
+
+                //zipcode
+                echo '<label for="requestZipAddress">Zipcode</label><br>';
+                echo '<input type="number" id="requestZipAddress" name="requestZipAddress" onkeyup="autofill_requestZipAddress()" value="'.$pdata["zip"].'" placeholder="Enter Zipcode..." list="potentialZipAddress" maxlength="10" required><br>';
+                  echo '<datalist id="potentialZipAddress">';
+                  
+                    //create query for potential donors
+                    $sql = "SELECT name, phone, street, zip, state FROM Donor";
+
+                    //X debug
+                    //echo $sql;
+
+                    //run the query
+                    $res = $conn->query($sql);
+                    while ($row = $res->fetch_assoc()) {
+                      echo '<option value="'.$row["zip"].'" label="'.$row["street"].', '.$row["state"].'"></option>';
+                    }
+                  echo '</datalist>';
+              } else if(isset($_GET["dpcode"])){
+                //Address Information
+                echo '<legend>Address of Pickup</legend>';
+                //street
+                echo '<label for="requestStreetAddress">Street</label><br>';
+                echo '<input type="text" id="requestStreetAddress" name="requestStreetAddress" onkeyup="autofill_requestStreetAddress()" value="'.$ddata["street"].'" placeholder="Enter Street..." list="potentialStreetAddress" maxlength="80" required><br>';
+                  echo '<datalist id="potentialStreetAddress"><br>';
+                  
+                    //create query for potential donors
+                    $sql = "SELECT name, phone, street, zip FROM Donor";
+
+                    //X debug
+                    //echo $sql;
+
+                    //run the query
+                    $res = $conn->query($sql);
+                    while ($row = $res->fetch_assoc()) {
+                      echo '<option value="'.$row["street"].'" label="'.$row["name"].', '.$row["zip"].'"></option>';
+                    }                 
+                  echo '</datalist>';
+
+                //city
+                echo '<label for="requestCityAddress">City</label><br>';
+                echo '<input type="text" id="requestCityAddress" name="requestCityAddress" onkeyup="autofill_requestCityAddress()" value="'.$ddata["city"].'" placeholder="Enter City..." list="potentialCityAddress" maxlength="20" required><br>';
+                  echo '<datalist id="potentialCityAddress">';
+                    
+                    //create query for potential donors
+                    $sql = "SELECT name, phone, city, street, zip, state FROM Donor";
+
+                    //debug
+                    //echo $sql;
+
+                    //run the query
+                    $res = $conn->query($sql);
+                    while ($row = $res->fetch_assoc()) {
+                      echo '<option value="'.$row["city"].'" label="'.$row["name"].', '.$row["zip"].'"></option>';
+                    } 
+                  echo '</datalist>';
+            
+                //state
+                echo '<label for="requestStateAddress">State</label><br>';
+                echo '<input type="text" id="requestStateAddress" name="requestStateAddress" onkeyup="autofill_requestStateAddress()" value="'.$ddata["state"].'" placeholder="Enter State..." list="potentialStateAddress" maxlength="2" required><br>';
+                  echo '<datalist id="potentialStateAddress">';
+                  
+                    //create query for potential donors
+                    $sql = "SELECT name, phone, street, zip, state FROM Donor";
+
+                    //X debug
+                    //echo $sql;
+
+                    //run the query
+                    $res = $conn->query($sql);
+                    while ($row = $res->fetch_assoc()) {
+                      echo '<option value="'.$row["state"].'" label="'.$row["name"].', '.$row["zip"].'"></option>';
+                    }
+                  echo '</datalist>';
+
+                //zipcode
+                echo '<label for="requestZipAddress">Zipcode</label><br>';
+                echo '<input type="number" id="requestZipAddress" name="requestZipAddress" onkeyup="autofill_requestZipAddress()" value="'.$ddata["zip"].'" placeholder="Enter Zipcode..." list="potentialZipAddress" maxlength="10" required><br>';
+                  echo '<datalist id="potentialZipAddress">';
+                  
+                    //create query for potential donors
+                    $sql = "SELECT name, phone, street, zip, state FROM Donor";
+
+                    //X debug
+                    //echo $sql;
+
+                    //run the query
+                    $res = $conn->query($sql);
+                    while ($row = $res->fetch_assoc()) {
+                      echo '<option value="'.$row["zip"].'" label="'.$row["street"].', '.$row["state"].'"></option>';
+                    }
+                  echo '</datalist>';
+              
+              }      
+            echo '</fieldset>';
+
+
+            //numitems
+            if(!isset($_GET["pcode"])) {
+              echo '<fieldset class="numItemsForm">';
+              echo '<legend>Number of Items to Pickup</legend>';
+                echo '<label for="numLargeItems"># Large items</label>';
+                echo '<input type="number" id="numLargeItems" name="requestLargeItems" onchange="calculate_requestTotalItems()" min="0" max="50" step="1" value="0"><br>';
+                echo '<label for="numMediumItems"># Medium items</label>';
+                echo '<input type="number" id="numMediumItems" name="requestMediumItems" onchange="calculate_requestTotalItems()" min="0" max="50" step="1" value="0"><br>';
+                echo '<label for="numSmallItems"># Small items</label>';
+                echo '<input type="number" id="numSmallItems" name="requestSmallItems" onchange="calculate_requestTotalItems()" min="0" max="50" step="1" value="0"><br><hr>';
+            } 
+
+            //total numItems
+            if (isset($_GET["pcode"])){ 
+              if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
+                echo '<label for="numTotalItems"># Total Items</label><br>';
+                echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" max="150" step="1" value="'.$pdata["numItems"].'" required disabled><br><hr>';
+              } else {
+                echo '<label for="numTotalItems"># Total Items</label><br>';
+                echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" max="150" step="1" value="'.$pdata["numItems"].'" required><br><hr>';
               }
-         
-          echo '</datalist>';
+            } else {
+              echo '<label for="numTotalItems"># Total Items</label><br>';
+              echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" max="150" step="1" value="'.$pdata["numItems"].'" required><br><hr>';
+            }  
+            
+            
+            if(!isset($_GET["pcode"])) {
+              //isMultipleTrips  
+              echo '<label for="requestMultTrips">Multiple Trips</label>';     
+              echo '<input type="checkbox" id="requestMultTrips" name="requestMultTrips"><br>';
+              echo '</fieldset>';
+            }
 
-        echo '<label for="requestZipAddress">Zipcode</label><br>';
-        echo '<input type="number" id="requestZipAddress" name="requestZipAddress" onkeyup="autofill_requestZipAddress()" value="'.$pdata["zip"].'" placeholder="Enter Zipcode..." list="potentialZipAddress" maxlength="10" required><br>';
-          echo '<datalist id="potentialZipAddress">';
-          
-              //create query for potential donors
-              $sql = "SELECT name, phone, street, zip, state FROM Donor";
-
-              //X debug
-              //echo $sql;
-
-              //run the query
-              $res = $conn->query($sql);
-              while ($row = $res->fetch_assoc()) {
-                echo '<option value="'.$row["zip"].'" label="'.$row["street"].', '.$row["state"].'"></option>';
+            
+              
+            if (isset($_GET["pcode"])){ 
+              if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
+                echo '<fieldset class="contactInfo" disabled>';
+              } else {
+                echo '<fieldset class="contactInfo">';
               }
-      
-          echo '</datalist>';
-      echo '</fieldset>';
-        
-      if (isset($_GET["pcode"])){ 
-        if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
-          echo '<fieldset class="contactInfo" disabled>';
-        } else {
-          echo '<fieldset class="contactInfo">';
-        }
-      } else {
-        echo '<fieldset class="contactInfo">';
-      }
-      echo '<fieldset class="PriorityForm">';
-        echo '<legend>Priority Level</legend>';
-        //echo '<label style="display:none" id="'.$pdata["priority"].'"></label>';
-        if($pdata["priority"] == 1) {
-        echo '<label for="topPriority">Top Priority</label>';
-        echo '<input type="radio" id="topPriority" name="requestPriorityLvl" value="1" required checked><br>';
-        echo '<label for="midPriority">Mid Priority</label>';
-        echo '<input type="radio" id="midPriority" name="requestPriorityLvl" value="2"><br>';
-        echo '<label for="lowPriority">Low Priority</label>';
-        echo '<input type="radio" id="lowPriority" name="requestPriorityLvl" value="3"><br>';
-        } else if($pdata["priority"] == 2) {
-        echo '<label for="topPriority">Top Priority</label>';
-        echo '<input type="radio" id="topPriority" name="requestPriorityLvl" value="1" required><br>';
-        echo '<label for="midPriority">Mid Priority</label>';
-        echo '<input type="radio" id="midPriority" name="requestPriorityLvl" value="2" checked><br>';
-        echo '<label for="lowPriority">Low Priority</label>';
-        echo '<input type="radio" id="lowPriority" name="requestPriorityLvl" value="3"><br>';
-        } else if($pdata["priority"] == 3) {
-        echo '<label for="topPriority">Top Priority</label>';
-        echo '<input type="radio" id="topPriority" name="requestPriorityLvl" value="1" required ><br>';
-        echo '<label for="midPriority">Mid Priority</label>';
-        echo '<input type="radio" id="midPriority" name="requestPriorityLvl" value="2"><br>';
-        echo '<label for="lowPriority">Low Priority</label>';
-        echo '<input type="radio" id="lowPriority" name="requestPriorityLvl" value="3" checked><br>';
-        } else {
-        echo '<label for="topPriority">Top Priority</label>';
-        echo '<input type="radio" id="topPriority" name="requestPriorityLvl" value="1" required><br>';
-        echo '<label for="midPriority">Mid Priority</label>';
-        echo '<input type="radio" id="midPriority" name="requestPriorityLvl" value="2"><br>';
-        echo '<label for="lowPriority">Low Priority</label>';
-        echo '<input type="radio" id="lowPriority" name="requestPriorityLvl" value="3"><br>';
-        }
-      echo '</fieldset>';
-      
+            } else {
+              echo '<fieldset class="contactInfo">';
+            }
 
-      echo '<label for="requestNotes">PICKUP NOTES</label><br>';
-      echo '<textarea class="notes" id="requestNotes" name="requestNotes" rows="20" cols="30"  placeholder="Enter Special Pickup instructions or directions..." maxlength="255">'.$pdata["notes"].'</textarea><br>';
-      
-      if (isset($_GET["pcode"])){
-        if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
-          
-        } else {
-          echo '<input type="submit" class="stickySubmit" value="Update Pickup Info"  name="submitEditPickupForm">';
-        }    
-      }
-      else{
-        //named submit button so we can tell when the form has been submitted
-        echo '<input type="submit" value="Request Pickup" name="submitRequestForm">';
-      }
-
-     ?>
+            //priority
+            echo '<fieldset class="PriorityForm">';
+              echo '<legend>Priority Level</legend>';
+              //echo '<label style="display:none" id="'.$pdata["priority"].'"></label>';
+              if($pdata["priority"] == 1) {
+              echo '<label for="topPriority">Top Priority</label>';
+              echo '<input type="radio" id="topPriority" name="requestPriorityLvl" value="1" required checked><br>';
+              echo '<label for="midPriority">Mid Priority</label>';
+              echo '<input type="radio" id="midPriority" name="requestPriorityLvl" value="2"><br>';
+              echo '<label for="lowPriority">Low Priority</label>';
+              echo '<input type="radio" id="lowPriority" name="requestPriorityLvl" value="3"><br>';
+              } else if($pdata["priority"] == 2) {
+              echo '<label for="topPriority">Top Priority</label>';
+              echo '<input type="radio" id="topPriority" name="requestPriorityLvl" value="1" required><br>';
+              echo '<label for="midPriority">Mid Priority</label>';
+              echo '<input type="radio" id="midPriority" name="requestPriorityLvl" value="2" checked><br>';
+              echo '<label for="lowPriority">Low Priority</label>';
+              echo '<input type="radio" id="lowPriority" name="requestPriorityLvl" value="3"><br>';
+              } else if($pdata["priority"] == 3) {
+              echo '<label for="topPriority">Top Priority</label>';
+              echo '<input type="radio" id="topPriority" name="requestPriorityLvl" value="1" required ><br>';
+              echo '<label for="midPriority">Mid Priority</label>';
+              echo '<input type="radio" id="midPriority" name="requestPriorityLvl" value="2"><br>';
+              echo '<label for="lowPriority">Low Priority</label>';
+              echo '<input type="radio" id="lowPriority" name="requestPriorityLvl" value="3" checked><br>';
+              } else {
+              echo '<label for="topPriority">Top Priority</label>';
+              echo '<input type="radio" id="topPriority" name="requestPriorityLvl" value="1" required><br>';
+              echo '<label for="midPriority">Mid Priority</label>';
+              echo '<input type="radio" id="midPriority" name="requestPriorityLvl" value="2"><br>';
+              echo '<label for="lowPriority">Low Priority</label>';
+              echo '<input type="radio" id="lowPriority" name="requestPriorityLvl" value="3"><br>';
+              }
+            echo '</fieldset>';
+            
+            //notes
+            echo '<label for="requestNotes">PICKUP NOTES</label><br>';
+            echo '<textarea class="notes" id="requestNotes" name="requestNotes" rows="20" cols="30"  placeholder="Enter Special Pickup instructions or directions..." maxlength="255">'.$pdata["notes"].'</textarea><br>';
+            
+            //submit
+            if (isset($_GET["pcode"])){
+              if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
+                
+              } else {
+                echo '<input type="submit" class="stickySubmit" value="Update Pickup Info"  name="submitEditPickupForm">';
+              }    
+            }
+            else{
+              //named submit button so we can tell when the form has been submitted
+              echo '<input type="submit" class="stickySubmit" value="Request Pickup" name="submitRequestForm">';
+            }
+          echo '</form>';  
+        }
+        ?>
+      </div>
     </div>
-    </form>
   </section>
 </div>
-  
-
 </body>
 </html>
