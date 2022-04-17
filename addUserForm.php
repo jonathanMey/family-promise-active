@@ -34,7 +34,7 @@ if(isset($_GET["submitAddUserForm"])){
     //X debug   
     //echo $sql;
     $conn->query($sql);
-  }
+}
 
 // Retrieve ID information for selected employee
 if(isset($_GET["ecode"])) {

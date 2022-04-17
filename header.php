@@ -48,8 +48,8 @@ include 'schedule.php';
         $linknames = array("Home","Request Pickup","View Donations","View Donors", "View Pickups", "Active Pickups");
         //volunteer level access = 4
         } elseif($_SESSION["Account"] == 4) {
-        $linkaddresses = array("index.php","addDonationForm.php","addDonorForm.php","addPickupForm.php","viewDonationsPage.php","viewDonorsPage.php","logout.php");
-        $linknames = array("Home","Add Donation","Add Donor","Request Pickup","View Donations","View Donors");
+        $linkaddresses = array("index.php","addDonationForm.php","addDonorForm.php","addPickupForm.php","viewDonationsPage.php","viewDonorsPage.php","viewPickupPage.php","logout.php");
+        $linknames = array("Home","Add Donation","Add Donor","Request Pickup","View Donations","View Donors", "View Pickups");
         }
 
         echo '<ul class="primary-nav">';
