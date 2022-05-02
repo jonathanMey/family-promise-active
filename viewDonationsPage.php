@@ -3,12 +3,14 @@ $current = basename($_SERVER['PHP_SELF']);
 $active = basename($_SERVER['PHP_SELF']);
 include 'header.php';
 
+//If adding new, Redirect to add donation page
 if(isset($_GET["submitAddDonationsForm"])){
   
   header("location: addDonationForm.php");
 }
 
 ?>
+
 
 <section class="viewForm-section">
   <form class="view-form" action="viewDonationsPage.php" name="viewDonationsForm" method="get">

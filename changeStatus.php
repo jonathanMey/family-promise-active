@@ -28,6 +28,11 @@ if(isset($_GET["submitChangePick"])) {
   //debug   
   //echo $sql;
   $conn->query($sql);
+
+  $sql = "UPDATE Don SET receipt='".$_GET["receipt"]."' WHERE PickID = ".$_GET["changeID"]."";
+  //X debug   
+  echo $sql;
+  $conn->query($sql);
 }
 
 if(isset($_GET["submitChangeDrop"])) {
@@ -40,6 +45,11 @@ if(isset($_GET["submitChangeDrop"])) {
   $sql = "UPDATE PickInfo SET DropOffDateTime='".$combinenowtime."' WHERE PickInfoID = (SELECT PickinfoID FROM Pick WHERE PickID = ".$_GET["changeID"].")";
   //debug   
   //echo $sql;
+  $conn->query($sql);
+
+  $sql = "UPDATE Don SET destination='".$_GET["destination"]."' WHERE PickID = ".$_GET["changeID"]."";
+  //X debug   
+  echo $sql;
   $conn->query($sql);
 }
 
@@ -141,7 +151,12 @@ echo '<section class="viewForm-section">';
     echo '<input type="hidden" name="changeID" value="'.$id.'">';
     echo '<div class="viewForm-input">';
     
-    echo '<h3 class="datelabel">Confirm Pickup is Loaded for: '.$row["name"].'</h3>';          
+    echo '<h3 class="datelabel">Confirm Pickup is Loaded for: '.$row["name"].'</h3>'; 
+    echo '<label> Reciept: </label>';
+    echo '<input type="radio" id="yes" name="receipt" value="1" required>';
+    echo '<label for="yes">Yes </label>';
+    echo '<input type="radio" id="no" name="receipt" value="0" required>';
+    echo '<label for="no">No </label>';          
     echo '</div>';
     echo '<input type="submit" class="regularSubmit" value="Confirm Pickup" name="submitChangePick"><br><br>';
   echo '</form>';
@@ -157,16 +172,19 @@ echo '</section>';
   $row = $res->fetch_assoc();
 
     echo '<form class="view-form" action="changeStatus.php" name="CompleteDropoff" method="get">';
-      
       echo '<input type="hidden" name="changeID" value="'.$id.'">';
       echo '<div class="viewForm-input">';
-      
-      echo '<h3 class="datelabel">Finalize Dropoff for: '.$row["name"].'</h3>';          
+      echo '<h3 class="datelabel">Finalize Dropoff for: '.$row["name"].'</h3>';
+      echo '<label> Destination: </label>';
+      echo '<input type="radio" id="store" name="destination" value="2" required>';
+      echo '<label for="store">Store </label>';
+      echo '<input type="radio" id="warehouse" name="destination" value="1" required>';
+      echo '<label for="warehouse">Warehouse </label>'; 
       echo '</div>';
       echo '<input type="submit" class="regularSubmit" value="Complete Pickup" name="submitChangeDrop"><br><br>';
     echo '</form>';
   echo '</section>';
-  }
+}
 ?>
 <?php
 $conn->close();

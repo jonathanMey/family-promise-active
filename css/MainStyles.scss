@@ -343,6 +343,11 @@ All View Forms
         label {
           margin: .5em auto 0 0;
         } 
+        .numItemsForm {
+          input {
+            width: 5%;
+          }
+        }
       }
     }
   }

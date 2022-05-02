@@ -387,6 +387,10 @@ All View Forms
   margin: .5em auto 0 0;
 }
 
+.addForm-section .add-form .addForm-input fieldset .numItemsForm input {
+  width: 5%;
+}
+
 .requestPickup-body {
   margin: 0;
   padding: 0;

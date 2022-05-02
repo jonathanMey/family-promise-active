@@ -240,7 +240,6 @@ if(isset($_GET["pcode"])) {
           $ddata = $res->fetch_assoc();
         }
           
-        
         //rest of the form
         if(isset($_GET["submitAutofillPickupForm"]) || isset($_GET["pcode"]) || isset($_GET["submitContinueRequestForm"])) {  
           echo '<form action="addPickupForm.php" name="requestForm" method="get">';  
@@ -510,31 +509,31 @@ if(isset($_GET["pcode"])) {
               }      
             echo '</fieldset>';
 
-
+            echo '<fieldset class="numItemsForm">';
+            echo '<legend>Items to Pickup</legend>';
             //numitems
             if(!isset($_GET["pcode"])) {
-              echo '<fieldset class="numItemsForm">';
-              echo '<legend>Number of Items to Pickup</legend>';
+              
                 echo '<label for="numLargeItems"># Large items</label>';
-                echo '<input type="number" id="numLargeItems" name="requestLargeItems" onchange="calculate_requestTotalItems()" min="0" max="50" step="1" value="0"><br>';
+                echo '<input type="number" id="numLargeItems" name="requestLargeItems" onchange="calculate_requestTotalItems()" min="0" step="1" value="0"><br>';
                 echo '<label for="numMediumItems"># Medium items</label>';
-                echo '<input type="number" id="numMediumItems" name="requestMediumItems" onchange="calculate_requestTotalItems()" min="0" max="50" step="1" value="0"><br>';
+                echo '<input type="number" id="numMediumItems" name="requestMediumItems" onchange="calculate_requestTotalItems()" min="0" step="5" value="0"><br>';
                 echo '<label for="numSmallItems"># Small items</label>';
-                echo '<input type="number" id="numSmallItems" name="requestSmallItems" onchange="calculate_requestTotalItems()" min="0" max="50" step="1" value="0"><br><hr>';
+                echo '<input type="number" id="numSmallItems" name="requestSmallItems" onchange="calculate_requestTotalItems()" min="0" step="10" value="0"><br><hr>';
             } 
 
             //total numItems
             if (isset($_GET["pcode"])){ 
               if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
                 echo '<label for="numTotalItems"># Total Items</label><br>';
-                echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" max="150" step="1" value="'.$pdata["numItems"].'" required disabled><br><hr>';
+                echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="5" value="'.$pdata["numItems"].'" required disabled><br><hr>';
               } else {
                 echo '<label for="numTotalItems"># Total Items</label><br>';
-                echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" max="150" step="1" value="'.$pdata["numItems"].'" required><br><hr>';
+                echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="5" value="'.$pdata["numItems"].'" required><br><hr>';
               }
             } else {
               echo '<label for="numTotalItems"># Total Items</label><br>';
-              echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" max="150" step="1" value="'.$pdata["numItems"].'" required><br><hr>';
+              echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="5" value="'.$pdata["numItems"].'" required><br><hr>';
             }  
             
             
@@ -542,11 +541,56 @@ if(isset($_GET["pcode"])) {
               //isMultipleTrips  
               echo '<label for="requestMultTrips">Multiple Trips</label>';     
               echo '<input type="checkbox" id="requestMultTrips" name="requestMultTrips"><br>';
-              echo '</fieldset>';
+            
             }
 
-            
-              
+            //Categories
+            echo '<hr><label>Categories</label><br>';
+            if($pdata["isDecor"] == 1) {
+              echo '<input type="checkbox" id="requestIsDecor" name="requestIsDecor" value="1" checked>';
+              echo '<label for="requestIsDecor">Decor</label><br>';
+            } else {
+              echo '<input type="checkbox" id="requestIsDecor" name="requestIsDecor" value="">';
+              echo '<label for="requestIsDecor">Decor</label><br>';
+            }
+            if($pdata["isFurniture"] == 1) {
+              echo '<input type="checkbox" id="requestIsFurniture" name="requestIsFurniture" value="1" checked>';
+              echo '<label for="requestIsFurniture">Furniture</label><br>';
+            } else {
+              echo '<input type="checkbox" id="requestIsFurniture" name="requestIsFurniture" value="0">';
+              echo '<label for="requestIsFurniture">Furniture</label><br>';
+            }
+            if($pdata["isKitchen"] == 1) {
+              echo '<input type="checkbox" id="requestIsKitchen" name="requestIsKitchen" value="1" checked>';
+              echo '<label for="requestIsKitchen">Kitchen</label><br>';
+            } else {
+              echo '<input type="checkbox" id="requestIsKitchen" name="requestIsKitchen" value="0">';
+              echo '<label for="requestIsKitchen">Kitchen</label><br>';
+            }
+            if($pdata["isEntertainment"] == 1) {
+              echo '<input type="checkbox" id="requestIsEntertainment" name="requestIsEntertainment" value="1" checked>';
+              echo '<label for="requestIsEntertainment">Entertainment</label><br>';
+            } else {
+              echo '<input type="checkbox" id="requestIsEntertainment" name="requestIsEntertainment" value="0">';
+              echo '<label for="requestIsEntertainment">Entertainment</label><br>';
+            }
+            if($pdata["isOutside"] == 1) {
+              echo '<input type="checkbox" id="requestIsOutside" name="requestIsOutside" value="1" checked>';
+              echo '<label for="requestIsOutside">Outside</label><br>';
+            } else {
+              echo '<input type="checkbox" id="requestIsOutside" name="requestIsOutside" value="0">';
+              echo '<label for="requestIsOutside">Outside</label><br>';
+            }
+            if($pdata["isMisc"] == 1) {
+              echo '<input type="checkbox" id="requestIsMisc" name="requestIsMisc" value="1" checked>';
+              echo '<label for="requestIsMisc">Misc</label><br>';
+            } else {
+              echo '<input type="checkbox" id="requestIsMisc" name="requestIsMisc" value="0">';
+              echo '<label for="requestIsMisc">Misc</label><br>';
+            }
+            echo '</fieldset>';  
+
+
             if (isset($_GET["pcode"])){ 
               if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
                 echo '<fieldset class="contactInfo" disabled>';
