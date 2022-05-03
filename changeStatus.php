@@ -6,13 +6,13 @@ include 'header.php';
 if(isset($_GET["submitChangeSched"])) {
 
   $sql = "UPDATE Pick SET status = 'Scheduled' WHERE PickID = ".$_GET["changeID"]."";
-  //debug   
+  //X debug   
   //echo $sql;
   $conn->query($sql);
   $combinenowtime = date('Y-m-d H:i:s', strtotime(date('Y-m-d')." ".date('H:i')));
   $combinedDT = date('Y-m-d H:i:s', strtotime($_GET["scheduleAppointmentDate"]." ".$_GET["scheduleAppointmentTime"]));
   $sql = "UPDATE PickInfo SET AppointmentDateTime='".$combinedDT."', ScheduleDateTime = '".$combinenowtime."' WHERE PickInfoID = (SELECT PickinfoID FROM Pick WHERE PickID = ".$_GET["changeID"].")";
-  //debug   
+  //X debug   
   //echo $sql;
   $conn->query($sql);
 }
@@ -20,36 +20,36 @@ if(isset($_GET["submitChangeSched"])) {
 if(isset($_GET["submitChangePick"])) {
 
   $sql = "UPDATE Pick SET status = 'Pickedup' WHERE PickID = ".$_GET["changeID"]."";
-  //debug   
+  //X debug   
   //echo $sql;
   $conn->query($sql);
   $combinenowtime = date('Y-m-d H:i:s', strtotime(date('Y-m-d')." ".date('H:i')));
   $sql = "UPDATE PickInfo SET PickupDateTime='".$combinenowtime."' WHERE PickInfoID = (SELECT PickinfoID FROM Pick WHERE PickID = ".$_GET["changeID"].")";
-  //debug   
+  //X debug   
   //echo $sql;
   $conn->query($sql);
 
-  $sql = "UPDATE Don SET receipt='".$_GET["receipt"]."' WHERE PickID = ".$_GET["changeID"]."";
+  $sql = "UPDATE DonDetails SET receipt='".$_GET["receipt"]."' WHERE DonDetailsID = (SELECT DonDetailsID FROM Don WHERE PickID = ".$_GET["changeID"].")";
   //X debug   
-  echo $sql;
+  //echo $sql;
   $conn->query($sql);
 }
 
 if(isset($_GET["submitChangeDrop"])) {
 
   $sql = "UPDATE Pick SET status = 'Completed' WHERE PickID = ".$_GET["changeID"]."";
-  //debug   
- // echo $sql;
+  //X debug   
+  // echo $sql;
   $conn->query($sql);
   $combinenowtime = date('Y-m-d H:i:s', strtotime(date('Y-m-d')." ".date('H:i')));
   $sql = "UPDATE PickInfo SET DropOffDateTime='".$combinenowtime."' WHERE PickInfoID = (SELECT PickinfoID FROM Pick WHERE PickID = ".$_GET["changeID"].")";
-  //debug   
+  //X debug   
   //echo $sql;
   $conn->query($sql);
 
-  $sql = "UPDATE Don SET destination='".$_GET["destination"]."' WHERE PickID = ".$_GET["changeID"]."";
+  $sql = "UPDATE DonDetails SET destination='".$_GET["destination"]."', whenDonated='".$combinenowtime."' WHERE DonDetailsID = (SELECT DonDetailsID FROM Don WHERE PickID = ".$_GET["changeID"].")";
   //X debug   
-  echo $sql;
+  //echo $sql;
   $conn->query($sql);
 }
 
@@ -60,7 +60,11 @@ if(isset($_GET["submitChangeDrop"])) {
 <section class="viewTable-section">
 <p class="viewDescription">ACTIVE PICKUPS</p>  
 <?php
-  $sql = "SELECT p.PickID, r.name, r.phone, p.street, p.status, i.priority FROM Don d, Donor r, Pick p, PickInfo i WHERE d.DonorInfoID = r.DonorID AND d.PickID = p.PickID AND p.PickinfoID = i.PickInfoID "; 
+  $sql = "SELECT p.PickID, r.name, r.phone, p.street, p.status, i.priority 
+  FROM Don d, Donor r, Pick p, PickInfo i 
+  WHERE d.DonorInfoID = r.DonorID 
+  AND d.PickID = p.PickID 
+  AND p.PickinfoID = i.PickInfoID "; 
 
   if(isset($_GET["pcode"])) {
     $sql = $sql."AND p.PickID = ".$_GET["pcode"]." ";
@@ -68,7 +72,7 @@ if(isset($_GET["submitChangeDrop"])) {
   
   $sql = $sql."AND p.status IN ('Requested', 'Scheduled', 'Pickedup')";
   $sql = $sql." ORDER BY p.status";
-  //debug
+  //X debug
   //echo $sql;
   // display search results
   $res = $conn->query($sql);
@@ -80,11 +84,11 @@ if(isset($_GET["submitChangeDrop"])) {
 
     while ($row = $res->fetch_assoc()) {
       if($row["status"] == Requested) {
-        $statusChange = "ScheduleAppointment";
+        $statusChange = "Schedule Appointment";
       } elseif($row["status"] == Scheduled) {
-        $statusChange = "ConfirmPickup";
+        $statusChange = "Confirm Pickup";
       } elseif($row["status"] == Pickedup) {
-        $statusChange = "FinalizeDropoff";
+        $statusChange = "Finalize Dropoff";
       }
 
       echo '<form class="changeTableForm" action="changeStatus.php" method="get">';
@@ -114,8 +118,11 @@ if(isset($_GET["ScheduleAppointment"])) {
 echo '<section class="viewForm-section">';
   
   $id = $_GET["PID"];
-  $sql = "SELECT r.name FROM Donor r, Don d WHERE d.PickID = $id AND d.DonorInfoID = r.DonorID";
-  //debug
+  $sql = "SELECT r.name 
+  FROM Donor r, Don d 
+  WHERE d.PickID = $id 
+  AND d.DonorInfoID = r.DonorID";
+  //X debug
   //echo $sql;
   $res = $conn->query($sql);
   $row = $res->fetch_assoc();
@@ -140,8 +147,11 @@ echo '</section>';
 echo '<section class="viewForm-section">';
 
   $id = $_GET["PID"];
-  $sql = "SELECT r.name FROM Donor r, Don d WHERE d.PickID = $id AND d.DonorInfoID = r.DonorID";
-  //debug
+  $sql = "SELECT r.name 
+  FROM Donor r, Don d 
+  WHERE d.PickID = $id 
+  AND d.DonorInfoID = r.DonorID";
+  //X debug
   //echo $sql;
   $res = $conn->query($sql);
   $row = $res->fetch_assoc();
@@ -165,8 +175,11 @@ echo '</section>';
   echo '<section class="viewForm-section">';
   
   $id = $_GET["PID"];
-  $sql = "SELECT r.name FROM Donor r, Don d WHERE d.PickID = $id AND d.DonorInfoID = r.DonorID";
-  //debug
+  $sql = "SELECT r.name 
+  FROM Donor r, Don d 
+  WHERE d.PickID = $id 
+  AND d.DonorInfoID = r.DonorID";
+  //X debug
   //echo $sql;
   $res = $conn->query($sql);
   $row = $res->fetch_assoc();

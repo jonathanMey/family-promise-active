@@ -63,7 +63,7 @@ if(isset($_GET["ocode"])) {
   $res = $conn->query($dtype);
 
   //X debug
-  echo $dtype;
+  //echo $dtype;
 
   $row = $res->fetch_assoc();
 

@@ -47,7 +47,16 @@ if(isset($_GET["submitAddDonationsForm"])){
 <section class="viewTable-section">
 <p class="viewDescription">DONATIONS</p>  
 <?php
-  $sql = "SELECT d.DonID, dr.name, dd.whenDonated, e.fname, l.Destination FROM Don d, Donor dr, DonDetails dd, Employee e, LookupDestination l WHERE d.DonorInfoID = dr.DonorID AND d.DonDetailsID = dd.DonDetailsID AND d.EmpID = e.Employeeid AND d.destination = l.Destinationid";
+
+  
+
+
+  $sql = "SELECT d.DonID, dr.name, e.fname, l.Destination 
+  FROM Don d, Donor dr, DonDetails dd, Employee e, LookupDestination l 
+  WHERE d.DonorInfoID = dr.DonorID 
+  AND d.DonDetailsID = dd.DonDetailsID 
+  AND d.EmpID = e.Employeeid 
+  AND dd.destination = l.Destinationid";
 
   $sql = $sql." HAVING dr.name LIKE '%".$_GET["viewDonationsDonor"]."%'";
 
@@ -56,7 +65,7 @@ if(isset($_GET["submitAddDonationsForm"])){
   }
   $sql = $sql." ORDER BY dr.name";
   //debug
-  //echo $sql;
+  echo $sql;
   // display search results
   $res = $conn->query($sql);
   echo '<div class="viewTable-container">';
@@ -64,14 +73,39 @@ if(isset($_GET["submitAddDonationsForm"])){
     $n = 0;
     echo '<table class="viewTable" id="viewDonationsTable" name="viewDonationsTable">';
     echo '<thead>';
-    echo '<tr class="headerRow"><th>Donor</th><th>Date of Donation</th><th>2nd chance Representative</th><th>Destination</th></tr>';
+    echo '<tr class="headerRow"><th>Donor</th><th>Type of Donation</th><th>2nd chance Representative</th><th>Destination</th></tr>';
     echo '</thead>';
     echo '<tbody>';
     while ($row = $res->fetch_assoc()) {
-      if($n%2==0){
-        echo '<tr class="evenRow"><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.$row["name"].'</a></td><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["whenDonated"])).'</a></td><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["fname"])).'</a></td><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["Destination"])).'</a></td></tr>';
+
+      //Check type
+      $dtype = "SELECT PickID
+      FROM Don 
+      WHERE DonID ='".$_GET["ocode"]."'";
+
+      $subres = $conn->query($dtype);
+
+      //X debug
+      //echo $dtype;
+
+      $subrow = $subres->fetch_assoc();
+
+      //If Pickup Donation
+      if ($subrow["PickID"] == NULL) {   
+        $isPickup = TRUE;
+        $donType="Pick up";
+      //If Dropoff Donation
       } else {
-        echo '<tr class="oddRow"><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["name"])).'</a></td><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["whenDonated"])).'</a></td><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["fname"])).'</a></td><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["Destination"])).'</a></td></tr>';
+        $isPickup = FALSE;
+        $donType="Drop off";
+      }
+
+
+
+      if($n%2==0){
+        echo '<tr class="evenRow"><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.$row["name"].'</a></td><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$donType)).'</a></td><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["fname"])).'</a></td><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["Destination"])).'</a></td></tr>';
+      } else {
+        echo '<tr class="oddRow"><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["name"])).'</a></td><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$donType)).'</a></td><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["fname"])).'</a></td><td><a href="addDonationForm.php?ocode='.$row["DonID"].'">'.utf8_encode(str_replace(chr(146),"'",$row["Destination"])).'</a></td></tr>';
       }
       $n++;
     }

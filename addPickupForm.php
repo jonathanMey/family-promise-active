@@ -34,7 +34,9 @@ if (isset($_GET["submitEditPickupForm"])){
   SET name='".$_GET["requestName"]."',
   phone='".$_GET["requestPhone"]."',
   email='".$_GET["requestemail"]."'
-  WHERE DonorID = (SELECT DonorInfoID FROM Don d Where d.PickID=".$_GET["pcode"].")";
+  WHERE DonorID = (SELECT DonorInfoID 
+                    FROM Don d 
+                    Where d.PickID=".$_GET["pcode"].")";
   //X debug   
   //echo $sql;
   $conn->query($sql);
@@ -44,15 +46,28 @@ if (isset($_GET["submitEditPickupForm"])){
 if(isset($_GET['submitRequestForm'])){
 
   $combinedDT = date('Y-m-d H:i:s', strtotime($_GET["requestDate"]." ".$_GET["requestTime"]));
-  $sql = "INSERT INTO PickInfo (RequestedDateTime, numItems, multTrips, timeFrame, priority, notes) VALUES ('".$combinedDT."', '".$_GET["requestTotalItems"]."', CASE WHEN '".$_GET["requestMultTrips"]."' = 'on' THEN 1 ELSE 0 END, '".str_replace("'","''",$_GET["requestTimeFrame"])."', '".$_GET["requestPriorityLvl"]."', '".str_replace("'","''",$_GET["requestNotes"])."')";
+  $sql = "INSERT INTO PickInfo (RequestedDateTime, numItems, multTrips, timeFrame, priority, notes) 
+  VALUES ('".$combinedDT."', '".$_GET["requestTotalItems"]."', 
+  CASE WHEN '".$_GET["requestMultTrips"]."' = 'on' THEN 1 ELSE 0 END, 
+  '".str_replace("'","''",$_GET["requestTimeFrame"])."', 
+  '".$_GET["requestPriorityLvl"]."', 
+  '".str_replace("'","''",$_GET["requestNotes"])."')";
+
   //X debug
   //echo $sql;
+  
   $conn->query($sql);
   $getMaxID = "SELECT MAX(PickInfoID) FROM PickInfo";
   $res = $conn->query($getMaxID);
   $row = $res->fetch_assoc();
   $PickInfoID = $row["MAX(PickInfoID)"]; 
-  $sql = "INSERT INTO Pick(PickinfoID, status, street, city, state, zip) VALUES ('".$PickInfoID."', 'Requested', '".$_GET["requestStreetAddress"]."', '".$_GET["requestCityAddress"]."','".$_GET["requestStateAddress"]."','".$_GET["requestZipAddress"]."')";
+  $sql = "INSERT INTO Pick(PickinfoID, status, street, city, state, zip) 
+  VALUES ('".$PickInfoID."', 
+  'Requested', 
+  '".$_GET["requestStreetAddress"]."', 
+  '".$_GET["requestCityAddress"]."',
+  '".$_GET["requestStateAddress"]."',
+  '".$_GET["requestZipAddress"]."')";
   //X debug
   //echo $sql;
   $conn->query($sql);
@@ -61,7 +76,10 @@ if(isset($_GET['submitRequestForm'])){
   $row = $res->fetch_assoc();
   $PickID = $row["MAX(PickID)"]; 
   //Check to see if donor exists already
-  $check = "SELECT DonorID, name, phone FROM Donor WHERE name = '".$_GET["requestName"]."' AND phone = '".$_GET["requestPhone"]."'";
+  $check = "SELECT DonorID, name, phone 
+  FROM Donor 
+  WHERE name = '".$_GET["requestName"]."' 
+  AND phone = '".$_GET["requestPhone"]."'";
   //X debug
   //echo $check;
   $res = $conn->query($check);
@@ -70,14 +88,24 @@ if(isset($_GET['submitRequestForm'])){
     $DonorID = $row["DonorID"];
   } else {
     if($_GET["requestHomeAddress"] == 1) {
-      $sql = "INSERT INTO Donor(name, email, phone, street, city, state, zip) VALUES('".$_GET["requestName"]."', '".$_GET["requestEmail"]."', '".$_GET["requestPhone"]."', '".$_GET["requestStreetAddress"]."', '".$_GET["requestCityAddress"]."', '".$_GET["requestStateAddress"]."', '".$_GET["requestZipAddress"]."')";
+      $sql = "INSERT INTO Donor(name, email, phone, street, city, state, zip) 
+      VALUES('".$_GET["requestName"]."', 
+      '".$_GET["requestEmail"]."', 
+      '".$_GET["requestPhone"]."', 
+      '".$_GET["requestStreetAddress"]."', 
+      '".$_GET["requestCityAddress"]."', 
+      '".$_GET["requestStateAddress"]."', 
+      '".$_GET["requestZipAddress"]."')";
       //X debug   
-      //echo $sql;
+      echo $sql;
       $conn->query($sql);
     } else {
-      $sql = "INSERT INTO Donor(name, email, phone) VALUES ('".$_GET["requestName"]."', '".$_GET["requestEmail"]."', '".$_GET["requestPhone"]."')";
+      $sql = "INSERT INTO Donor(name, email, phone) 
+      VALUES ('".$_GET["requestName"]."', 
+      '".$_GET["requestEmail"]."', 
+      '".$_GET["requestPhone"]."')";
       //X debug   
-      //echo $sql;
+      echo $sql;
       $conn->query($sql);
     } 
     $getMaxID = "SELECT MAX(DonorID) FROM Donor";
@@ -86,25 +114,44 @@ if(isset($_GET['submitRequestForm'])){
     $DonorID = $row["MAX(DonorID)"];  
   }
   //echo 'DonorID: '.$DonorID; 
-  $sql = "INSERT INTO DonDetails(qty) VALUES('".$_GET["requestTotalItems"]."')";
+  $sql = "INSERT INTO DonDetails(qty, isDecor, isFurniture, isKitchen, isEntertainment, isOutdoor, isMisc, notes) 
+  VALUES('".$_GET["requestTotalItems"]."', 
+  CASE WHEN '".$_GET["requestIsDecor"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsDecor"]."' = '' THEN 0 END END,
+  CASE WHEN '".$_GET["requestIsFurniture"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsFurniture"]."' = '' THEN 0 END END,
+  CASE WHEN '".$_GET["requestIsKitchen"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsKitchen"]."' = '' THEN 0 END END,
+  CASE WHEN '".$_GET["requestIsEntertainment"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsEntertainment"]."' = '' THEN 0 END END,
+  CASE WHEN '".$_GET["requestIsOutdoor"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsOutdoor"]."' = '' THEN 0 END END,
+  CASE WHEN '".$_GET["requestIsMisc"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsMisc"]."' = '' THEN 0 END END,
+  '".str_replace("'","''",$_GET["requestNotes"])."')";
+
   //X debug
-  //echo $sql;
+  echo $sql;
   $conn->query($sql);
   $getMaxID = "SELECT MAX(DonDetailsID) FROM DonDetails";
   $res = $conn->query($getMaxID);
   $row = $res->fetch_assoc();
   $DonDetailsID = $row["MAX(DonDetailsID)"];
   
-  $sql = "INSERT INTO Don(PickID, DonorInfoID, EmpID, DonDetailsID, notes) VALUES ('".$PickID."', '".$DonorID."', '".$_SESSION["UserID"]."', '".$DonDetailsID."', '".str_replace("'","''",$_GET["requestNotes"])."')";
+  $sql = "INSERT INTO Don(PickID, DonorInfoID, EmpID, DonDetailsID) 
+  VALUES ('".$PickID."', 
+  '".$DonorID."',
+   '".$_SESSION["UserID"]."', 
+   '".$DonDetailsID."')";
   //X debug   
-  //echo $sql;
+  echo $sql;
   //echo 'UserID: '.$_SESSION["UserID"];
   $conn->query($sql); 
 }
 
+
 //Retreive selected Pickup ID
 if(isset($_GET["pcode"])) {
-  $sql = "SELECT p.*, i.*, r.name, r.phone, r.email FROM Pick p, PickInfo i, Don d, Donor r WHERE p.PickID ='".$_GET["pcode"]."' AND p.PickinfoID = i.PickInfoID AND d.PickID = p.PickID AND d.DonorInfoID = r.DonorID";
+  $sql = "SELECT p.*, i.*, r.name, r.phone, r.email 
+  FROM Pick p, PickInfo i, Don d, Donor r 
+  WHERE p.PickID ='".$_GET["pcode"]."' 
+  AND p.PickinfoID = i.PickInfoID 
+  AND d.PickID = p.PickID 
+  AND d.DonorInfoID = r.DonorID";
   // select data about the country from the country table
   $res = $conn->query($sql);
   
@@ -526,14 +573,14 @@ if(isset($_GET["pcode"])) {
             if (isset($_GET["pcode"])){ 
               if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
                 echo '<label for="numTotalItems"># Total Items</label><br>';
-                echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="5" value="'.$pdata["numItems"].'" required disabled><br><hr>';
+                echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="1" value="'.$pdata["numItems"].'" required disabled><br><hr>';
               } else {
                 echo '<label for="numTotalItems"># Total Items</label><br>';
-                echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="5" value="'.$pdata["numItems"].'" required><br><hr>';
+                echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="1" value="'.$pdata["numItems"].'" required><br><hr>';
               }
             } else {
               echo '<label for="numTotalItems"># Total Items</label><br>';
-              echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="5" value="'.$pdata["numItems"].'" required><br><hr>';
+              echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="1" value="'.$pdata["numItems"].'" required><br><hr>';
             }  
             
             
@@ -546,46 +593,65 @@ if(isset($_GET["pcode"])) {
 
             //Categories
             echo '<hr><label>Categories</label><br>';
+
             if($pdata["isDecor"] == 1) {
-              echo '<input type="checkbox" id="requestIsDecor" name="requestIsDecor" value="1" checked>';
+              echo '<input type="checkbox" id="requestIsDecor" name="requestIsDecor" checked>';
+              echo '<label for="requestIsDecor">Decor</label><br>';
+            } else if($pdata["isDecor"] == 0){
+              echo '<input type="checkbox" id="requestIsDecor" name="requestIsDecor">';
               echo '<label for="requestIsDecor">Decor</label><br>';
             } else {
-              echo '<input type="checkbox" id="requestIsDecor" name="requestIsDecor" value="">';
+              echo '<input type="checkbox" id="requestIsDecor" name="requestIsDecor">';
               echo '<label for="requestIsDecor">Decor</label><br>';
             }
             if($pdata["isFurniture"] == 1) {
-              echo '<input type="checkbox" id="requestIsFurniture" name="requestIsFurniture" value="1" checked>';
+              echo '<input type="checkbox" id="requestIsFurniture" name="requestIsFurniture" checked>';
+              echo '<label for="requestIsFurniture">Furniture</label><br>';
+            } else if($pdata["isFurniture"] == 0){
+              echo '<input type="checkbox" id="requestIsFurniture" name="requestIsFurniture">';
               echo '<label for="requestIsFurniture">Furniture</label><br>';
             } else {
-              echo '<input type="checkbox" id="requestIsFurniture" name="requestIsFurniture" value="0">';
+              echo '<input type="checkbox" id="requestIsFurniture" name="requestIsFurniture">';
               echo '<label for="requestIsFurniture">Furniture</label><br>';
             }
             if($pdata["isKitchen"] == 1) {
-              echo '<input type="checkbox" id="requestIsKitchen" name="requestIsKitchen" value="1" checked>';
+              echo '<input type="checkbox" id="requestIsKitchen" name="requestIsKitchen" checked>';
+              echo '<label for="requestIsKitchen">Kitchen</label><br>';
+            } else if($pdata["isKitchen"] == 0){
+              echo '<input type="checkbox" id="requestIsKitchen" name="requestIsKitchen">';
               echo '<label for="requestIsKitchen">Kitchen</label><br>';
             } else {
-              echo '<input type="checkbox" id="requestIsKitchen" name="requestIsKitchen" value="0">';
+              echo '<input type="checkbox" id="requestIsKitchen" name="requestIsKitchen">';
               echo '<label for="requestIsKitchen">Kitchen</label><br>';
             }
             if($pdata["isEntertainment"] == 1) {
-              echo '<input type="checkbox" id="requestIsEntertainment" name="requestIsEntertainment" value="1" checked>';
+              echo '<input type="checkbox" id="requestIsEntertainment" name="requestIsEntertainment" checked>';
+              echo '<label for="requestIsEntertainment">Entertainment</label><br>';
+            } else if($pdata["isEntertainment"] == 0){
+              echo '<input type="checkbox" id="requestIsEntertainment" name="requestIsEntertainment">';
               echo '<label for="requestIsEntertainment">Entertainment</label><br>';
             } else {
-              echo '<input type="checkbox" id="requestIsEntertainment" name="requestIsEntertainment" value="0">';
+              echo '<input type="checkbox" id="requestIsEntertainment" name="requestIsEntertainment">';
               echo '<label for="requestIsEntertainment">Entertainment</label><br>';
             }
             if($pdata["isOutside"] == 1) {
-              echo '<input type="checkbox" id="requestIsOutside" name="requestIsOutside" value="1" checked>';
-              echo '<label for="requestIsOutside">Outside</label><br>';
+              echo '<input type="checkbox" id="requestIsOutdoor" name="requestIsOutdoor" checked>';
+              echo '<label for="requestIsOutdoor">Outside</label><br>';
+            } else if($pdata["isOutside"] == 0){
+              echo '<input type="checkbox" id="requestIsOutdoor" name="requestIsOutdoor">';
+              echo '<label for="requestIsOutdoor">Outside</label><br>';
             } else {
-              echo '<input type="checkbox" id="requestIsOutside" name="requestIsOutside" value="0">';
-              echo '<label for="requestIsOutside">Outside</label><br>';
+              echo '<input type="checkbox" id="requestIsOutdoor" name="requestIsOutdoor">';
+              echo '<label for="requestIsOutdoor">Outside</label><br>';
             }
             if($pdata["isMisc"] == 1) {
-              echo '<input type="checkbox" id="requestIsMisc" name="requestIsMisc" value="1" checked>';
+              echo '<input type="checkbox" id="requestIsMisc" name="requestIsMisc" checked>';
+              echo '<label for="requestIsMisc">Misc</label><br>';
+            } else if($pdata["isMisc"] == 0){
+              echo '<input type="checkbox" id="requestIsMisc" name="requestIsMisc">';
               echo '<label for="requestIsMisc">Misc</label><br>';
             } else {
-              echo '<input type="checkbox" id="requestIsMisc" name="requestIsMisc" value="0">';
+              echo '<input type="checkbox" id="requestIsMisc" name="requestIsMisc">';
               echo '<label for="requestIsMisc">Misc</label><br>';
             }
             echo '</fieldset>';  
