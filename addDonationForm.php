@@ -68,20 +68,25 @@ if(isset($_GET["ocode"])) {
   $row = $res->fetch_assoc();
 
   //If Pickup Donation
+
   if ($row["PickID"] == NULL) {
 
-    $sql = "SELECT i.*, p.status, r.name, r.phone, e.fname, e.lname, e.role FROM DonDetails o, Employee e, Pick p, PickInfo i, Don d, Donor r WHERE d.DonID ='".$_GET["ocode"]."' AND p.PickinfoID = i.PickInfoID AND d.PickID = p.PickID AND d.DonorInfoID = r.DonorID AND d.DonDetailsID = o.DonDetailsID AND d.EmpID = e.Employeeid";
+    $sql = "SELECT i.*, o.*, p.status, r.name, r.phone, e.fname, e.lname, e.role FROM DonDetails o, Employee e, Pick p, PickInfo i, Don d, Donor r WHERE d.DonID ='".$_GET["ocode"]."' AND p.PickinfoID = i.PickInfoID AND d.PickID = p.PickID AND d.DonorInfoID = r.DonorID AND d.DonDetailsID = o.DonDetailsID AND d.EmpID = e.Employeeid";
     
-    $isPickup = TRUE;
+    //X debug
+    //echo $sql;
+    $isPickup = FALSE;
   
   //If Dropoff Donation
   } else {
 
-    $sql = "SELECT i.*, p.status, r.name, r.phone, e.fname, e.lname, e.role FROM DonDetails o, Employee e, Pick p, PickInfo i, Don d, Donor r WHERE d.DonID ='".$_GET["ocode"]."' AND p.PickinfoID = i.PickInfoID AND d.PickID = p.PickID AND d.DonorInfoID = r.DonorID AND d.DonDetailsID = o.DonDetailsID AND d.EmpID = e.Employeeid";
+    $sql = "SELECT i.*, o.*, p.status, r.name, r.phone, e.fname, e.lname, e.role FROM DonDetails o, Employee e, Pick p, PickInfo i, Don d, Donor r WHERE d.DonID ='".$_GET["ocode"]."' AND p.PickinfoID = i.PickInfoID AND d.PickID = p.PickID AND d.DonorInfoID = r.DonorID AND d.DonDetailsID = o.DonDetailsID AND d.EmpID = e.Employeeid";
 
-    $isPickup = FALSE;
+    //X debug
+    //echo $sql;
+    $isPickup = TRUE;
   }
-
+ 
   $res = $conn->query($sql);
     
   //X debug 
@@ -196,12 +201,12 @@ if(isset($_GET["ocode"])) {
         $ddata = $res->fetch_assoc();
 
         //name
-        echo '<label for="requestName">Name</label><br>';
-        echo '<input type="text" id="donName" name="donName" value="'.$ddata["name"].'" placeholder="Enter Donor Name..." list="potentialDonors" maxlength="25" required><br>';
+        echo '<label for="donName">Name</label><br>';
+        echo '<input type="text" id="donName" name="donName" value="'.$name.'" placeholder="Enter Donor Name..." list="potentialDonors" maxlength="25" required><br>';
         
         //phone  
-        echo '<label for="requestPhone">Phone</label><br>';
-        echo '<input type="tel" id="donPhone" name="donPhone" value="'.$ddata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialPhone" maxlength="20" required><br>';
+        echo '<label for="donPhone">Phone</label><br>';
+        echo '<input type="tel" id="donPhone" name="donPhone" value="'.$phone.'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialPhone" maxlength="20" required><br>';
       
 
       //If Donor is not Found
@@ -374,147 +379,153 @@ if(isset($_GET["ocode"])) {
     if(isset($_GET["submitContinueDonationForm"]) || isset($_GET["submitChooseNoBtn"])) {
       echo '<fieldset class="info">';
       echo '<legend>New Donation Information</legend><br>';
+    } else if(isset($_GET["ocode"])) {
+      echo '<fieldset class="info">';
+      echo '<legend>Donation Information</legend><br>';
     }
+
     // If displaying a pickup order
     if($isPickup == TRUE) {
-      
-      //info
-      if(isset($_GET["ocode"])) {
+      if (isset($_GET["submitContinueDonationForm"]) || isset($_GET["submitChooseNoBtn"]) || isset($_GET["ocode"])) {
         
-        //name
-        echo '<label for="requestName">Name</label><br>';
-        echo '<input type="text" id="donName" name="donName" value="'.$odata["name"].'" placeholder="Enter Donor Name..." list="potentialDonors" maxlength="25" required><br>';
-        
-        //phone  
-        echo '<label for="requestPhone">Phone</label><br>';
-        echo '<input type="tel" id="donPhone" name="donPhone" value="'.$odata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialPhone" maxlength="20" required><br>';
-      } 
+        //info
+        if(isset($_GET["ocode"])) {
+          
+          //name
+          echo '<label for="requestName">Name</label><br>';
+          echo '<input type="text" id="donName" name="donName" value="'.$odata["name"].'" placeholder="Enter Donor Name..." list="potentialDonors" maxlength="25" required><br>';
+          
+          //phone  
+          echo '<label for="requestPhone">Phone</label><br>';
+          echo '<input type="tel" id="donPhone" name="donPhone" value="'.$odata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialPhone" maxlength="20" required><br>';
+        } 
 
-      //times of scheduling
-      echo '<br><label>Time log: </label><br>';
-      if($odata["status"] == Requested | Scheduled | Pickedup | Completed) {
-        $date =  date("Y-m-d", strtotime($odata["RequestedDateTime"]));
-        $time =  date("H:i", strtotime($odata["RequestedDateTime"]));
-        echo 'Time Requested:  <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
-        echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
-      } 
-      if($odata["status"] == Scheduled | Pickedup | Completed) {
-        $date =  date("Y-m-d", strtotime($odata["ScheduleDateTime"]));
-        $time =  date("H:i", strtotime($odata["ScheduleDateTime"]));
-        echo 'Time Scheduled: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
-        echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
-      } 
-      if($odata["status"] == Pickedup | Completed) {
-        $date =  date("Y-m-d", strtotime($odata["PickupDateTime"]));
-        $time =  date("H:i", strtotime($odata["PickupDateTime"]));
-        echo 'Time Picked up: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
-        echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
-      } 
-      if($odata["status"] == Completed) {
-        $date =  date("Y-m-d", strtotime($odata["DropOffDateTime"]));
-        $time =  date("H:i", strtotime($odata["DropOffDateTime"]));
-        echo 'Time Completed: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
-        echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
-      } 
-      if($odata["status"] == Cancelled) {
-        $date =  date("Y-m-d", strtotime($odata["CancelledDateTime"]));
-        $time =  date("H:i", strtotime($odata["CancelledDateTime"]));
-        echo 'Time Cancelled: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
-        echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+        //times of scheduling
+        echo '<br><label> Time log: </label><br>';
+        if($odata["status"] == Requested || Scheduled || Pickedup || Completed) {
+          $date =  date("Y-m-d", strtotime($odata["RequestedDateTime"]));
+          $time =  date("H:i", strtotime($odata["RequestedDateTime"]));
+          echo 'Time Requested:  <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
+          echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+        } 
+        if($odata["status"] == Scheduled || Pickedup || Completed) {
+          $date =  date("Y-m-d", strtotime($odata["ScheduleDateTime"]));
+          $time =  date("H:i", strtotime($odata["ScheduleDateTime"]));
+          echo 'Time Scheduled: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
+          echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+        } 
+        if($odata["status"] == Pickedup || Completed) {
+          $date =  date("Y-m-d", strtotime($odata["PickupDateTime"]));
+          $time =  date("H:i", strtotime($odata["PickupDateTime"]));
+          echo 'Time Picked up: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
+          echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+        } 
+        if($odata["status"] == Completed) {
+          $date =  date("Y-m-d", strtotime($odata["DropOffDateTime"]));
+          $time =  date("H:i", strtotime($odata["DropOffDateTime"]));
+          echo 'Time Completed: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
+          echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+        } 
+        if($odata["status"] == Cancelled) {
+          $date =  date("Y-m-d", strtotime($odata["CancelledDateTime"]));
+          $time =  date("H:i", strtotime($odata["CancelledDateTime"]));
+          echo 'Time Cancelled: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
+          echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+        }
+        
+        //notes
+        echo '<br><label for="requestNotes">PICKUP NOTES</label><br>';
+        echo '<textarea class="notes" id="requestNotes" name="requestNotes" rows="20" cols="30"  placeholder="Enter Special Pickup instructions or directions..." maxlength="255">'.$odata["notes"].'</textarea><br><hr>';
       }
-      
-      //notes
-      echo '<label for="requestNotes">PICKUP NOTES</label><br>';
-      echo '<textarea class="notes" id="requestNotes" name="requestNotes" rows="20" cols="30"  placeholder="Enter Special Pickup instructions or directions..." maxlength="255">'.$odata["notes"].'</textarea><br>';
-
     }
-  
     // If a Dropoff order
-    if($isPickup == FALSE & (isset($_GET["submitContinueDonationForm"]) || isset($_GET["submitChooseNoBtn"]))) {
-      
-      //info
-      if(isset($_GET["ocode"])) {
+    if($isPickup == FALSE) {
+      if(isset($_GET["submitContinueDonationForm"]) || isset($_GET["submitChooseNoBtn"]) || isset($_GET["ocode"])) {
         
-        //name
-        echo '<label for="requestName">Name</label><br>';
-        echo '<input type="text" id="donName" name="donName" value="'.$odata["name"].'" placeholder="Enter Donor Name..." list="potentialDonors" maxlength="25" required><br>';
-        
-        //phone  
-        echo '<label for="requestPhone">Phone</label><br>';
-        echo '<input type="tel" id="donPhone" name="donPhone" value="'.$odata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialPhone" maxlength="20" required><br>';
-      } 
+        //info
+        if(isset($_GET["ocode"])) {
+          
+          //name
+          echo '<label for="requestName">Name</label><br>';
+          echo '<input type="text" id="donName" name="donName" value="'.$odata["name"].'" placeholder="Enter Donor Name..." list="potentialDonors" maxlength="25" required><br>';
+          
+          //phone  
+          echo '<label for="requestPhone">Phone</label><br>';
+          echo '<input type="tel" id="donPhone" name="donPhone" value="'.$odata["phone"].'" placeholder="Enter as: 8651234567" pattern="[0-9]{10}" list="potentialPhone" maxlength="20" required><br>';
+         
 
-      //time of dropoff
-      $date =  date("Y-m-d", strtotime($odata["whenDonated"]));
-      $time =  date("H:i", strtotime($odata["whenDonated"]));
-      echo 'Time Scheduled: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
-      echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+          //time of dropoff
+          $date =  date("Y-m-d", strtotime($odata["whenDonated"]));
+          $time =  date("H:i", strtotime($odata["whenDonated"]));
+          echo 'Time Scheduled: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
+          echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+        }
+        //notes
+        echo '<label for="requestNotes">Donation NOTES</label><br>';
+        echo '<textarea class="notes" id="requestNotes" name="requestNotes" rows="20" cols="30"  placeholder="Enter Special donation notes..." maxlength="255">'.$odata["notes"].'</textarea><br>';
 
-      //notes
-      echo '<br><label for="requestNotes">Donation NOTES</label><br>';
-      echo '<textarea class="notes" id="requestNotes" name="requestNotes" rows="20" cols="30"  placeholder="Enter Special donation notes..." maxlength="255">'.$odata["notes"].'</textarea><br>';
-
+      }
     }
 
     // For all donations
-    if(isset($_GET["submitContinueDonationForm"]) || isset($_GET["submitChooseNoBtn"])) {
+    if(isset($_GET["submitContinueDonationForm"]) || isset($_GET["submitChooseNoBtn"]) || isset($_GET["ocode"])) {
 
       //total numItems
       if (isset($_GET["ocode"])){ 
         if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
           echo '<label for="numTotalItems"># Total Items</label><br>';
-          echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" max="150" step="1" value="'.$odata["numItems"].'" disabled><br><hr>';
+          echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="1" value="'.$odata["numItems"].'" disabled><br>';
         } else {
           echo '<label for="numTotalItems"># Total Items</label><br>';
-          echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" max="150" step="1" value="'.$odata["numItems"].'"><br><hr>';
+          echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="1" value="'.$odata["numItems"].'"><br>';
         }
       } else {
         echo '<label for="numTotalItems"># Total Items</label><br>';
-        echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" max="150" step="1" value="'.$odata["numItems"].'"><br>';
+        echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="1" value="'.$odata["numItems"].'"><br>';
       }
 
       //Categories
-      echo '<br><label>Categories</label><br>';
+      echo '<br><label>Categories:</label><br>';
       if($odata["isDecor"] == 1) {
-        echo '<input type="checkbox" id="requestIsDecor" name="requestIsDecor" value="1" checked>';
+        echo '<input type="checkbox" id="requestIsDecor" name="requestIsDecor" checked>';
         echo '<label for="requestIsDecor">Decor</label><br>';
       } else {
-        echo '<input type="checkbox" id="requestIsDecor" name="requestIsDecor" value="">';
+        echo '<input type="checkbox" id="requestIsDecor" name="requestIsDecor">';
         echo '<label for="requestIsDecor">Decor</label><br>';
       }
       if($odata["isFurniture"] == 1) {
-        echo '<input type="checkbox" id="requestIsFurniture" name="requestIsFurniture" value="1" checked>';
+        echo '<input type="checkbox" id="requestIsFurniture" name="requestIsFurniture" checked>';
         echo '<label for="requestIsFurniture">Furniture</label><br>';
       } else {
-        echo '<input type="checkbox" id="requestIsFurniture" name="requestIsFurniture" value="0">';
+        echo '<input type="checkbox" id="requestIsFurniture" name="requestIsFurniture">';
         echo '<label for="requestIsFurniture">Furniture</label><br>';
       }
       if($odata["isKitchen"] == 1) {
-        echo '<input type="checkbox" id="requestIsKitchen" name="requestIsKitchen" value="1" checked>';
+        echo '<input type="checkbox" id="requestIsKitchen" name="requestIsKitchen" checked>';
         echo '<label for="requestIsKitchen">Kitchen</label><br>';
       } else {
-        echo '<input type="checkbox" id="requestIsKitchen" name="requestIsKitchen" value="0">';
+        echo '<input type="checkbox" id="requestIsKitchen" name="requestIsKitchen">';
         echo '<label for="requestIsKitchen">Kitchen</label><br>';
       }
       if($odata["isEntertainment"] == 1) {
-        echo '<input type="checkbox" id="requestIsEntertainment" name="requestIsEntertainment" value="1" checked>';
+        echo '<input type="checkbox" id="requestIsEntertainment" name="requestIsEntertainment" checked>';
         echo '<label for="requestIsEntertainment">Entertainment</label><br>';
       } else {
-        echo '<input type="checkbox" id="requestIsEntertainment" name="requestIsEntertainment" value="0">';
+        echo '<input type="checkbox" id="requestIsEntertainment" name="requestIsEntertainment">';
         echo '<label for="requestIsEntertainment">Entertainment</label><br>';
       }
-      if($odata["isOutside"] == 1) {
-        echo '<input type="checkbox" id="requestIsOutside" name="requestIsOutside" value="1" checked>';
-        echo '<label for="requestIsOutside">Outside</label><br>';
+      if($odata["isOutdoor"] == 1) {
+        echo '<input type="checkbox" id="requestIsOutdoor" name="requestIsOutdoor" checked>';
+        echo '<label for="requestIsOutdoor">Outdoor</label><br>';
       } else {
-        echo '<input type="checkbox" id="requestIsOutside" name="requestIsOutside" value="0">';
-        echo '<label for="requestIsOutside">Outside</label><br>';
+        echo '<input type="checkbox" id="requestIsOutdoor" name="requestIsOutdoor">';
+        echo '<label for="requestIsOutdoor">Outdoor</label><br>';
       }
       if($odata["isMisc"] == 1) {
-        echo '<input type="checkbox" id="requestIsMisc" name="requestIsMisc" value="1" checked>';
+        echo '<input type="checkbox" id="requestIsMisc" name="requestIsMisc" checked>';
         echo '<label for="requestIsMisc">Misc</label><br>';
       } else {
-        echo '<input type="checkbox" id="requestIsMisc" name="requestIsMisc" value="0">';
+        echo '<input type="checkbox" id="requestIsMisc" name="requestIsMisc">';
         echo '<label for="requestIsMisc">Misc</label><br>';
       }
       
@@ -525,10 +536,15 @@ if(isset($_GET["ocode"])) {
         echo '<label for="yes">Yes </label>';
         echo '<input type="radio" id="no" name="receipt" value="0" required>';
         echo '<label for="no">No </label>'; 
-      } else {
+      } else if($odata["receipt"] === 0) {
         echo '<input type="radio" id="yes" name="receipt" value="1" required>';
         echo '<label for="yes">Yes </label>';
         echo '<input type="radio" id="no" name="receipt" value="0" required checked>';
+        echo '<label for="no">No </label>'; 
+      } else {
+        echo '<input type="radio" id="yes" name="receipt" value="1" required>';
+        echo '<label for="yes">Yes </label>';
+        echo '<input type="radio" id="no" name="receipt" value="0" required>';
         echo '<label for="no">No </label>'; 
       }
 
@@ -539,17 +555,21 @@ if(isset($_GET["ocode"])) {
         echo '<label for="store">Store </label>';
         echo '<input type="radio" id="warehouse" name="destination" value="1" required checked>';
         echo '<label for="warehouse">Warehouse </label>'; 
-      }  else {
+      } else if($odata["destination"] == 2){
         echo '<input type="radio" id="store" name="destination" value="2" required checked>';
+        echo '<label for="store">Store </label>';
+        echo '<input type="radio" id="warehouse" name="destination" value="1" required>';
+        echo '<label for="warehouse">Warehouse </label>'; 
+      } else {
+        echo '<input type="radio" id="store" name="destination" value="2" required>';
         echo '<label for="store">Store </label>';
         echo '<input type="radio" id="warehouse" name="destination" value="1" required>';
         echo '<label for="warehouse">Warehouse </label>'; 
       }
 
-      if (isset($_GET["ocode"])){ 
-        
+      if (isset($_GET["ocode"])){         
         //Employee
-        echo '<label for="requestEmpName">Representative Name</label><br>';
+        echo '<br><br><label for="requestEmpName">Representative Name:</label><br>';
         echo '<input type="text" id="donEmpName" name="donEmpName" value="'.$odata["fname"].' '.$odata["lname"].'"><br>';
         
       }

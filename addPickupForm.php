@@ -22,13 +22,29 @@ if (isset($_GET["submitEditPickupForm"])){
   $sql = "UPDATE PickInfo
   SET RequestedDateTime='$combinedDT',
   numItems='".$_GET["requestTotalItems"]."',
+  multTrips= CASE WHEN '".$_GET["requestMultTrips"]."' = 'on' THEN '1' ELSE CASE WHEN '".$_GET["requestMultTrips"]."' = '' THEN '0' END END,
   timeFrame='".str_replace("'","''",$_GET["requestTimeFrame"])."',
   priority='".$_GET["requestPriorityLvl"]."',
   notes='".str_replace("'","''",$_GET["requestNotes"])."'
   WHERE PickInfoID = (SELECT PickinfoID FROM Pick Where PickID=".$_GET["pcode"].") ";
   //X debug   
+  echo $sql;
+  $conn->query($sql);
+
+  $sql="UPDATE DonDetails
+  SET qty = '".$_GET["requestTotalItems"]."',
+  isDecor=CASE WHEN '".$_GET["requestIsDecor"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsDecor"]."' = '' THEN 0 END END,
+  isFurniture=CASE WHEN '".$_GET["requestIsFurniture"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsFurniture"]."' = '' THEN 0 END END,
+  isKitchen=CASE WHEN '".$_GET["requestIsKitchen"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsKitchen"]."' = '' THEN 0 END END,
+  isEntertainment=CASE WHEN '".$_GET["requestIsEntertainment"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsEntertainment"]."' = '' THEN 0 END END,
+  isOutdoor=CASE WHEN '".$_GET["requestIsOutdoor"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsOutdoor"]."' = '' THEN 0 END END,
+  isMisc=CASE WHEN '".$_GET["requestIsMisc"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsMisc"]."' = '' THEN 0 END END,
+  notes='".str_replace("'","''",$_GET["requestNotes"])."'
+  WHERE DonDetailsID = (SELECT DonDetailsID FROM Don WHERE PickID=".$_GET["pcode"].")";
+  //X debug
   //echo $sql;
   $conn->query($sql);
+
 
   $sql = "UPDATE Donor
   SET name='".$_GET["requestName"]."',
@@ -146,12 +162,13 @@ if(isset($_GET['submitRequestForm'])){
 
 //Retreive selected Pickup ID
 if(isset($_GET["pcode"])) {
-  $sql = "SELECT p.*, i.*, r.name, r.phone, r.email 
-  FROM Pick p, PickInfo i, Don d, Donor r 
+  $sql = "SELECT p.*, i.*, dd.*, r.name, r.phone, r.email 
+  FROM Pick p, PickInfo i, Don d, Donor r, DonDetails dd 
   WHERE p.PickID ='".$_GET["pcode"]."' 
   AND p.PickinfoID = i.PickInfoID 
   AND d.PickID = p.PickID 
-  AND d.DonorInfoID = r.DonorID";
+  AND d.DonorInfoID = r.DonorID
+  AND dd.DonDetailsID = d.DonDetailsID";
   // select data about the country from the country table
   $res = $conn->query($sql);
   
@@ -170,43 +187,7 @@ if(isset($_GET["pcode"])) {
   <section class="form-section">
     <div class="requestPickup-form" action="addPickupForm.php" name="requestForm" method="get">
       <div class="form-header">
-        <div class="time-container">
-        <?php 
-          if(isset($_GET["pcode"])) {
-            echo '<h3 class="datelabel">'.$pdata["status"].' ON:</h3>'; 
-            if($pdata["status"] == Requested) {
-              $date =  date("Y-m-d", strtotime($pdata["RequestedDateTime"]));
-              $time =  date("H:i", strtotime($pdata["RequestedDateTime"]));
-              echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
-              echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
-            } else if($pdata["status"] == Scheduled) {
-              $date =  date("Y-m-d", strtotime($pdata["ScheduleDateTime"]));
-              $time =  date("H:i", strtotime($pdata["ScheduleDateTime"]));
-              echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
-              echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
-            } else if($pdata["status"] == Pickedup) {
-              $date =  date("Y-m-d", strtotime($pdata["PickupDateTime"]));
-              $time =  date("H:i", strtotime($pdata["PickupDateTime"]));
-              echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
-              echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
-            } else if($pdata["status"] == Completed) {
-              $date =  date("Y-m-d", strtotime($pdata["DropOffDateTime"]));
-              $time =  date("H:i", strtotime($pdata["DropOffDateTime"]));
-              echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
-              echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
-            } else if($pdata["status"] == Cancelled) {
-              $date =  date("Y-m-d", strtotime($pdata["CancelledDateTime"]));
-              $time =  date("H:i", strtotime($pdata["CancelledDateTime"]));
-              echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
-              echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
-            }
-          } else {
-            echo '<h3 class="datelabel">TODAYS DATE</h3>';          
-            echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.date('Y-m-d').'"><br>';
-            echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.date('H:i').'">';
-          } 
-        ?>
-        </div>
+        
         <img src="Images/stackedLogo.png" alt="Family Promise Logo">
         <h2>DONATION PICK-UP INFORMATION FORM</h2>
         <hr>
@@ -299,6 +280,41 @@ if(isset($_GET["pcode"])) {
               echo '<label><a href="changeStatus.php?pcode='.$_GET["pcode"].'">Change Status</a></label>';
             }
               echo '<legend>Status: '.$pdata["status"].'</legend>';
+              echo '<div class="time-container">';
+              if(isset($_GET["pcode"])) {
+                echo '<p class="datelabel">'.$pdata["status"].' ON:</p>'; 
+                if($pdata["status"] == Requested) {
+                  $date =  date("Y-m-d", strtotime($pdata["RequestedDateTime"]));
+                  $time =  date("H:i", strtotime($pdata["RequestedDateTime"]));
+                  echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
+                  echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
+                } else if($pdata["status"] == Scheduled) {
+                  $date =  date("Y-m-d", strtotime($pdata["ScheduleDateTime"]));
+                  $time =  date("H:i", strtotime($pdata["ScheduleDateTime"]));
+                  echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
+                  echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
+                } else if($pdata["status"] == Pickedup) {
+                  $date =  date("Y-m-d", strtotime($pdata["PickupDateTime"]));
+                  $time =  date("H:i", strtotime($pdata["PickupDateTime"]));
+                  echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
+                  echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
+                } else if($pdata["status"] == Completed) {
+                  $date =  date("Y-m-d", strtotime($pdata["DropOffDateTime"]));
+                  $time =  date("H:i", strtotime($pdata["DropOffDateTime"]));
+                  echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
+                  echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
+                } else if($pdata["status"] == Cancelled) {
+                  $date =  date("Y-m-d", strtotime($pdata["CancelledDateTime"]));
+                  $time =  date("H:i", strtotime($pdata["CancelledDateTime"]));
+                  echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
+                  echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
+                }
+              } else {
+                echo '<h3 class="datelabel">TODAYS DATE</h3>';          
+                echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.date('Y-m-d').'"><br>';
+                echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.date('H:i').'">';
+              } 
+              echo '</div>';
             echo '</fieldset>';
           }
 
@@ -555,18 +571,27 @@ if(isset($_GET["pcode"])) {
               
               }      
             echo '</fieldset>';
-
-            echo '<fieldset class="numItemsForm">';
-            echo '<legend>Items to Pickup</legend>';
+            
             //numitems
+            if (isset($_GET["pcode"])){ 
+              if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
+                echo '<fieldset class="numItemsForm" disabled>';
+              } else {
+                echo '<fieldset class="numItemsForm">';
+              }
+            } else {
+              echo '<fieldset class="numItemsForm">';
+            }
+            echo '<legend>Items to Pickup</legend>';
+            
             if(!isset($_GET["pcode"])) {
               
                 echo '<label for="numLargeItems"># Large items</label>';
                 echo '<input type="number" id="numLargeItems" name="requestLargeItems" onchange="calculate_requestTotalItems()" min="0" step="1" value="0"><br>';
                 echo '<label for="numMediumItems"># Medium items</label>';
-                echo '<input type="number" id="numMediumItems" name="requestMediumItems" onchange="calculate_requestTotalItems()" min="0" step="5" value="0"><br>';
+                echo '<input type="number" id="numMediumItems" name="requestMediumItems" onchange="calculate_requestTotalItems()" min="0" step="1" value="0"><br>';
                 echo '<label for="numSmallItems"># Small items</label>';
-                echo '<input type="number" id="numSmallItems" name="requestSmallItems" onchange="calculate_requestTotalItems()" min="0" step="10" value="0"><br><hr>';
+                echo '<input type="number" id="numSmallItems" name="requestSmallItems" onchange="calculate_requestTotalItems()" min="0" step="1" value="0"><br><hr>';
             } 
 
             //total numItems
@@ -584,11 +609,16 @@ if(isset($_GET["pcode"])) {
             }  
             
             
-            if(!isset($_GET["pcode"])) {
+            if($pdata["multTrips"]==1) {
               //isMultipleTrips  
               echo '<label for="requestMultTrips">Multiple Trips</label>';     
-              echo '<input type="checkbox" id="requestMultTrips" name="requestMultTrips"><br>';
-            
+              echo '<input type="checkbox" id="requestMultTrips" name="requestMultTrips" checked><br>'; 
+            } else if($pdata["multTrips"]==0) {
+              echo '<label for="requestMultTrips">Multiple Trips</label>';     
+              echo '<input type="checkbox" id="requestMultTrips" name="requestMultTrips"><br>'; 
+            } else {
+              echo '<label for="requestMultTrips">Multiple Trips</label>';     
+              echo '<input type="checkbox" id="requestMultTrips" name="requestMultTrips"><br>'; 
             }
 
             //Categories
@@ -634,7 +664,7 @@ if(isset($_GET["pcode"])) {
               echo '<input type="checkbox" id="requestIsEntertainment" name="requestIsEntertainment">';
               echo '<label for="requestIsEntertainment">Entertainment</label><br>';
             }
-            if($pdata["isOutside"] == 1) {
+            if($pdata["isOutdoor"] == 1) {
               echo '<input type="checkbox" id="requestIsOutdoor" name="requestIsOutdoor" checked>';
               echo '<label for="requestIsOutdoor">Outside</label><br>';
             } else if($pdata["isOutside"] == 0){

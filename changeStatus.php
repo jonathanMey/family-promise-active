@@ -84,11 +84,11 @@ if(isset($_GET["submitChangeDrop"])) {
 
     while ($row = $res->fetch_assoc()) {
       if($row["status"] == Requested) {
-        $statusChange = "Schedule Appointment";
+        $statusChange = "ScheduleAppointment";
       } elseif($row["status"] == Scheduled) {
-        $statusChange = "Confirm Pickup";
+        $statusChange = "ConfirmPickup";
       } elseif($row["status"] == Pickedup) {
-        $statusChange = "Finalize Dropoff";
+        $statusChange = "FinalizeDropoff";
       }
 
       echo '<form class="changeTableForm" action="changeStatus.php" method="get">';
