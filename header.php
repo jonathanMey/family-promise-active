@@ -36,15 +36,15 @@ include 'schedule.php';
       //display and give user proper link addresses accourding to access lvl
         //admin level access = 1
         if($_SESSION["Account"] == 1){
-        $linkaddresses = array("index.php","addDonationForm.php","addDonorForm.php","addReportForm.php","addPickupForm.php","viewDonationsPage.php","viewDonorsPage.php","viewUsersPage.php", "viewPickupPage.php", "logout.php","viewReportPage.php","editDonation.php","editDonor.php","addUserForm.php");
+        $linkaddresses = array("index.php","addDonationForm.php","addDonorForm.php","addReportForm.php","addPickupForm.php","viewDonationsPage.php","viewDonorsPage.php","viewUsersPage.php", "viewPickupPage.php", "logout.php","viewReportPage.php","addUserForm.php");
         $linknames = array("Home","Add Donation","Add Donor","Create Report","Request Pickup","View Donations","View Donors","View Users", "View Pickups");
         //employee level access = 3
         }elseif($_SESSION["Account"] == 3){
-        $linkaddresses = array("index.php","addDonationForm.php","addDonorForm.php","addPickupForm.php","viewDonationsPage.php","viewDonorsPage.php", "viewPickupPage.php", "logout.php","editDonation.php","editDonor.php");
+        $linkaddresses = array("index.php","addDonationForm.php","addDonorForm.php","addPickupForm.php","viewDonationsPage.php","viewDonorsPage.php", "viewPickupPage.php", "logout.php");
         $linknames = array("Home","Add Donation","Add Donor","Request Pickup","View Donations","View Donors", "View Pickups");
         //truck level access = 2
         } elseif($_SESSION["Account"] == 2) {
-        $linkaddresses = array("index.php","addPickupForm.php","viewDonationsPage.php","viewDonorsPage.php", "viewPickupPage.php", "changeStatus.php", "addDonorForm.php", "logout.php");
+        $linkaddresses = array("index.php","addPickupForm.php","viewDonationsPage.php","viewDonorsPage.php", "viewPickupPage.php", "changeStatus.php", "addDonorForm.php", "addDonationForm.php", "logout.php");
         $linknames = array("Home","Request Pickup","View Donations","View Donors", "View Pickups", "Active Pickups");
         //volunteer level access = 4
         } elseif($_SESSION["Account"] == 4) {

@@ -20,7 +20,7 @@ if (isset($_GET["submitEditPickupForm"])){
   $conn->query($sql);
 
   $sql = "UPDATE PickInfo
-  SET RequestedDateTime='$combinedDT',
+  SET RequestedDateTime='".$combinedDT."',
   numItems='".$_GET["requestTotalItems"]."',
   multTrips= CASE WHEN '".$_GET["requestMultTrips"]."' = 'on' THEN '1' ELSE CASE WHEN '".$_GET["requestMultTrips"]."' = '' THEN '0' END END,
   timeFrame='".str_replace("'","''",$_GET["requestTimeFrame"])."',
@@ -28,7 +28,7 @@ if (isset($_GET["submitEditPickupForm"])){
   notes='".str_replace("'","''",$_GET["requestNotes"])."'
   WHERE PickInfoID = (SELECT PickinfoID FROM Pick Where PickID=".$_GET["pcode"].") ";
   //X debug   
-  echo $sql;
+  //echo $sql;
   $conn->query($sql);
 
   $sql="UPDATE DonDetails
@@ -98,6 +98,7 @@ if(isset($_GET['submitRequestForm'])){
   AND phone = '".$_GET["requestPhone"]."'";
   //X debug
   //echo $check;
+  $res= $conn->query($check);
   if($res->num_rows > 0) {
     $row = $res->fetch_assoc();
     $DonorID = $row["DonorID"];
@@ -112,7 +113,7 @@ if(isset($_GET['submitRequestForm'])){
       '".$_GET["requestStateAddress"]."', 
       '".$_GET["requestZipAddress"]."')";
       //X debug   
-      echo $sql;
+      //echo $sql;
       $conn->query($sql);
     } else {
       $sql = "INSERT INTO Donor(name, email, phone) 
@@ -120,13 +121,16 @@ if(isset($_GET['submitRequestForm'])){
       '".$_GET["requestEmail"]."', 
       '".$_GET["requestPhone"]."')";
       //X debug   
-      echo $sql;
+      //echo $sql;
       $conn->query($sql);
     } 
     $getMaxID = "SELECT MAX(DonorID) FROM Donor";
     $res = $conn->query($getMaxID);
     $row = $res->fetch_assoc();
     $DonorID = $row["MAX(DonorID)"];  
+    
+    //X debug
+    //echo $DonorID;
   }
   //echo 'DonorID: '.$DonorID; 
   $sql = "INSERT INTO DonDetails(qty, isDecor, isFurniture, isKitchen, isEntertainment, isOutdoor, isMisc, notes) 
@@ -140,7 +144,7 @@ if(isset($_GET['submitRequestForm'])){
   '".str_replace("'","''",$_GET["requestNotes"])."')";
 
   //X debug
-  echo $sql;
+  //echo $sql;
   $conn->query($sql);
   $getMaxID = "SELECT MAX(DonDetailsID) FROM DonDetails";
   $res = $conn->query($getMaxID);
@@ -153,7 +157,7 @@ if(isset($_GET['submitRequestForm'])){
    '".$_SESSION["UserID"]."', 
    '".$DonDetailsID."')";
   //X debug   
-  echo $sql;
+  //echo $sql;
   //echo 'UserID: '.$_SESSION["UserID"];
   $conn->query($sql); 
 }
@@ -276,7 +280,9 @@ if(isset($_GET["pcode"])) {
               echo '<fieldset class="Status" disabled>';
             } else {
               echo '<fieldset class="Status">';
-              echo '<label><a href="changeStatus.php?pcode='.$_GET["pcode"].'">Change Status</a></label>';
+              if($pdata["status"]!=Completed){
+                echo '<label><a href="changeStatus.php?pcode='.$_GET["pcode"].'">Change Status</a></label>';
+              }
             }
               echo '<legend>Status: '.$pdata["status"].'</legend>';
               echo '<div class="time-container">';
@@ -292,6 +298,12 @@ if(isset($_GET["pcode"])) {
                   $time =  date("H:i", strtotime($pdata["ScheduleDateTime"]));
                   echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date.'"><br>';
                   echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time.'">';
+
+                  echo '<p class="datelabel">Appointment ON:</p>'; 
+                  $date2 =  date("Y-m-d", strtotime($pdata["AppointmentDateTime"]));
+                  $time2 =  date("H:i", strtotime($pdata["AppointmentDateTime"]));
+                  echo 'Date: <input class="dateTime" type="date" name="requestDate" value="'.$date2.'"><br>';
+                  echo 'Time: <input class="dateTime" type="time" name="requestTime" value="'.$time2.'">';
                 } else if($pdata["status"] == Pickedup) {
                   $date =  date("Y-m-d", strtotime($pdata["PickupDateTime"]));
                   $time =  date("H:i", strtotime($pdata["PickupDateTime"]));

@@ -33,3 +33,10 @@ Here is the function for auto updating a table while filling it out, can be used
     $ExistingDonorID = $_GET["DonorID"];
   } 
 ?>
+
+
+ALTER TABLE Don AUTO_INCREMENT=1;
+ALTER TABLE DonDetails AUTO_INCREMENT=1;
+ALTER TABLE Pick AUTO_INCREMENT=1;
+ALTER TABLE PickInfo AUTO_INCREMENT=1;
+ALTER TABLE Donor AUTO_INCREMENT=2;

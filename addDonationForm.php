@@ -4,33 +4,71 @@ $current = basename($_SERVER['PHP_SELF']);
 $active = basename($_SERVER['PHP_SELF']);
 include 'header.php';
 //$addDonor;
-//ACTION: Submit EDIT donation form TODO 
-if (isset($_GET["submitEditDonationForm"])){
-  //$combinedDT = date('Y-m-d H:i:s', strtotime($_GET["cdate"]." ".$_GET["ctime"]));
+//ACTION: Submit EDIT donation form
+if (isset($_GET["submitEditPDonationForm"])){
   
-  //echo $_GET["addDonorIP"];
+  $combinedDTR = date('Y-m-d H:i:s', strtotime($_GET["rDate"]." ".$_GET["rTime"]));
+  $combinedDTS = date('Y-m-d H:i:s', strtotime($_GET["sDate"]." ".$_GET["sTime"]));
+  $combinedDTP = date('Y-m-d H:i:s', strtotime($_GET["pDate"]." ".$_GET["pTime"]));
+  $combinedDTD = date('Y-m-d H:i:s', strtotime($_GET["dDate"]." ".$_GET["dTime"]));
+  $combinedDTC = date('Y-m-d H:i:s', strtotime($_GET["cDate"]." ".$_GET["cTime"]));
 
-  $sql = "UPDATE Donor
-  SET name=CASE WHEN '".$_GET["addDonorName"]."' = '' THEN NULL ELSE '".$_GET["addDonorName"]."' END,
-  email=CASE WHEN '".$_GET["addDonorEmail"]."' = '' THEN NULL ELSE '".$_GET["addDonorEmail"]."' END,
-  phone=CASE WHEN '".$_GET["addDonorPhone"]."' = '' THEN NULL ELSE '".$_GET["addDonorPhone"]."' END,
-  gender=CASE WHEN '".$_GET["addDonorGender"]."' = '' THEN NULL ELSE '".$_GET["addDonorGender"]."' END,
-  age_group=CASE WHEN '".$_GET["addDonorAge"]."' = '' THEN NULL ELSE '".$_GET["addDonorAge"]."' END,
-  street=CASE WHEN '".$_GET["addDonorStreet"]."' = '' THEN NULL ELSE '".$_GET["addDonorStreet"]."' END,
-  city=CASE WHEN '".$_GET["addDonorCity"]."' = '' THEN NULL ELSE '".$_GET["addDonorCity"]."' END,
-  state=CASE WHEN '".$_GET["addDonorState"]."' = '' THEN NULL ELSE '".$_GET["addDonorState"]."' END,
-  zip=CASE WHEN '".$_GET["addDonorZip"]."' = '' THEN NULL ELSE '".$_GET["addDonorZip"]."' END,
-  heard=CASE WHEN '".$_GET["addDonorHeard"]."' = '' THEN NULL ELSE '".$_GET["addDonorHeard"]."' END,
-  Vip=CASE WHEN '".$_GET["addDonorIP"]."' = '' THEN NULL ELSE '".$_GET["addDonorIP"]."' END,
-  notes='".str_replace("'","''",$_GET["addDonorNotes"])."'
-  WHERE DonorID=".$_GET["dcode"]."";
+  $sql = "UPDATE PickInfo
+  SET RequestedDateTime='".$combinedDTR."',
+  ScheduleDateTime='".$combinedDTS."',
+  PickupDateTime='".$combinedDTP."',
+  DropOffDateTime='".$combinedDTD."',
+  CancelledDateTime='".$combinedDTC."',
+  numItems='".$_GET["requestTotalItems"]."',
+  notes='".str_replace("'","''",$_GET["requestNotes"])."'
+  WHERE PickInfoID = (SELECT PickID FROM Don Where DonID=".$_GET["ocode"].") ";
   //X debug   
   //echo $sql;
+  $conn->query($sql);
 
+  $sql="UPDATE DonDetails
+  SET qty = '".$_GET["requestTotalItems"]."',
+  isDecor=CASE WHEN '".$_GET["requestIsDecor"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsDecor"]."' = '' THEN 0 END END,
+  isFurniture=CASE WHEN '".$_GET["requestIsFurniture"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsFurniture"]."' = '' THEN 0 END END,
+  isKitchen=CASE WHEN '".$_GET["requestIsKitchen"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsKitchen"]."' = '' THEN 0 END END,
+  isEntertainment=CASE WHEN '".$_GET["requestIsEntertainment"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsEntertainment"]."' = '' THEN 0 END END,
+  isOutdoor=CASE WHEN '".$_GET["requestIsOutdoor"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsOutdoor"]."' = '' THEN 0 END END,
+  isMisc=CASE WHEN '".$_GET["requestIsMisc"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsMisc"]."' = '' THEN 0 END END,
+  receipt='".$_GET["receipt"]."',
+  destination='".$_GET["destination"]."',
+  notes='".str_replace("'","''",$_GET["requestNotes"])."'
+  whenDonated='".$combinedDTD."',
+  WHERE DonDetailsID = (SELECT DonDetailsID FROM Don WHERE DonID=".$_GET["ocode"].")";
+  //X debug
+  //echo $sql;
+  $conn->query($sql);
+
+}
+
+//ACTION: Submit EDIT donation form
+if(isset($_GET["submitEditDDonationForm"])) {
+
+  $combinedDT = date('Y-m-d H:i:s', strtotime($_GET["wDate"]." ".$_GET["wTime"]));
+
+  $sql="UPDATE DonDetails
+  SET qty = '".$_GET["requestTotalItems"]."',
+  isDecor=CASE WHEN '".$_GET["requestIsDecor"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsDecor"]."' = '' THEN 0 END END,
+  isFurniture=CASE WHEN '".$_GET["requestIsFurniture"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsFurniture"]."' = '' THEN 0 END END,
+  isKitchen=CASE WHEN '".$_GET["requestIsKitchen"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsKitchen"]."' = '' THEN 0 END END,
+  isEntertainment=CASE WHEN '".$_GET["requestIsEntertainment"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsEntertainment"]."' = '' THEN 0 END END,
+  isOutdoor=CASE WHEN '".$_GET["requestIsOutdoor"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsOutdoor"]."' = '' THEN 0 END END,
+  isMisc=CASE WHEN '".$_GET["requestIsMisc"]."' = 'on' THEN 1 ELSE CASE WHEN '".$_GET["requestIsMisc"]."' = '' THEN 0 END END,
+  receipt='".$_GET["receipt"]."',
+  destination='".$_GET["destination"]."',
+  notes='".str_replace("'","''",$_GET["requestNotes"])."',
+  whenDonated='".$combinedDT."'
+  WHERE DonDetailsID = (SELECT DonDetailsID FROM Don WHERE DonID=".$_GET["ocode"].")";
+  //X debug
+  //echo $sql;
   $conn->query($sql);
 }
 
-//ACTION: submit ADD drop off donation page TODO
+//ACTION: submit ADD drop off donation page 
 if(isset($_GET["submitAddDonationForm"])){  
   
   //Insert PickInfo
@@ -239,6 +277,8 @@ if(isset($_GET["ocode"])) {
       //Beginning of the Donation form
       echo '<form class="addForm-input" action="addDonationForm.php" name="addDonationForm" method="get">';
 
+    
+
       //If Donor is Found
       if($donorFound == TRUE & isset($_GET["submitContinueDonationForm"])) {
         $existingDonorID = $row["DonorID"];
@@ -435,6 +475,10 @@ if(isset($_GET["ocode"])) {
       echo '<form class="addForm-input" action="addDonationForm.php" name="addDonationForm" method="get">';
     }
     
+    if(isset($_GET["ocode"])) {
+      echo '<input type="hidden" name="ocode" value="'.$_GET["ocode"].'">';
+    }
+
     //Donation Form
     if(isset($_GET["submitContinueDonationForm"]) || isset($_GET["submitChooseNoBtn"])) {
       
@@ -471,32 +515,32 @@ if(isset($_GET["ocode"])) {
         if($odata["status"] == Requested || Scheduled || Pickedup || Completed) {
           $date =  date("Y-m-d", strtotime($odata["RequestedDateTime"]));
           $time =  date("H:i", strtotime($odata["RequestedDateTime"]));
-          echo 'Time Requested:  <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
-          echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+          echo 'Time Requested:  <input class="dateTime" type="date" name="rDate" value="'.$date.'">';
+          echo ', <input class="dateTime" type="time" name="rTime" value="'.$time.'"><br>';
         } 
         if($odata["status"] == Scheduled || Pickedup || Completed) {
           $date =  date("Y-m-d", strtotime($odata["ScheduleDateTime"]));
           $time =  date("H:i", strtotime($odata["ScheduleDateTime"]));
-          echo 'Time Scheduled: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
-          echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+          echo 'Time Scheduled: <input class="dateTime" type="date" name="sDate" value="'.$date.'">';
+          echo ', <input class="dateTime" type="time" name="sTime" value="'.$time.'"><br>';
         } 
         if($odata["status"] == Pickedup || Completed) {
           $date =  date("Y-m-d", strtotime($odata["PickupDateTime"]));
           $time =  date("H:i", strtotime($odata["PickupDateTime"]));
-          echo 'Time Picked up: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
-          echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+          echo 'Time Picked up: <input class="dateTime" type="date" name="pDate" value="'.$date.'">';
+          echo ', <input class="dateTime" type="time" name="pTime" value="'.$time.'"><br>';
         } 
         if($odata["status"] == Completed) {
           $date =  date("Y-m-d", strtotime($odata["DropOffDateTime"]));
           $time =  date("H:i", strtotime($odata["DropOffDateTime"]));
-          echo 'Time Completed: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
-          echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+          echo 'Time Completed: <input class="dateTime" type="date" name="dDate" value="'.$date.'">';
+          echo ', <input class="dateTime" type="time" name="dTime" value="'.$time.'"><br>';
         } 
         if($odata["status"] == Cancelled) {
           $date =  date("Y-m-d", strtotime($odata["CancelledDateTime"]));
           $time =  date("H:i", strtotime($odata["CancelledDateTime"]));
-          echo 'Time Cancelled: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
-          echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+          echo 'Time Cancelled: <input class="dateTime" type="date" name="cDate" value="'.$date.'">';
+          echo ', <input class="dateTime" type="time" name="cTime" value="'.$time.'"><br>';
         }
         
         //notes
@@ -523,11 +567,11 @@ if(isset($_GET["ocode"])) {
           //time of dropoff
           $date =  date("Y-m-d", strtotime($odata["whenDonated"]));
           $time =  date("H:i", strtotime($odata["whenDonated"]));
-          echo 'Donated on: <input class="dateTime" type="date" name="requestDate" value="'.$date.'">';
-          echo ', <input class="dateTime" type="time" name="requestTime" value="'.$time.'"><br>';
+          echo '<br>Donated on: <input class="dateTime" type="date" name="wDate" value="'.$date.'">';
+          echo ', <input class="dateTime" type="time" name="wTime" value="'.$time.'"><br>';
         }
         //notes
-        echo '<label for="requestNotes">Donation NOTES</label><br>';
+        echo '<br><label for="requestNotes">Donation NOTES</label><br>';
         echo '<textarea class="notes" id="requestNotes" name="requestNotes" rows="20" cols="30"  placeholder="Enter Special donation notes..." maxlength="255">'.$odata["notes"].'</textarea><br>';
 
       }
@@ -539,7 +583,7 @@ if(isset($_GET["ocode"])) {
       //total numItems
       if (isset($_GET["ocode"])){ 
         if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
-          echo '<label for="numTotalItems"># Total Items</label><br>';
+          echo '<br><label for="numTotalItems"># Total Items</label><br>';
           echo '<input type="number" id="numTotalItems" name="requestTotalItems" min="0" step="1" value="'.$odata["qty"].'" disabled><br>';
         } else {
           echo '<label for="numTotalItems"># Total Items</label><br>';
@@ -645,13 +689,22 @@ if(isset($_GET["ocode"])) {
     }
 
     //named submit button Submitting for editing a donation
-    if (isset($_GET["ocode"]) & $isPickup == FALSE & isset($_GET["submitContinueDonationForm"])){
-      //Admin & Employee
-      if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
-        
+    if (isset($_GET["ocode"]) || isset($_GET["submitContinueDonationForm"])){
+      if($isPickup) {
+        //Admin & Employee
+        if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
+          
+        } else {
+          echo '<input type="submit" class="stickySubmit" value="Update pick up donation" name="submitEditPDonationForm">';
+        }
       } else {
-        echo '<input type="submit" class="stickySubmit" value="Update '.$ddata["name"].'s donation" name="submitEditDonorForm">';
-      }    
+        //Admin & Employee
+        if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {
+          
+        } else {
+          echo '<input type="submit" class="stickySubmit" value="Update drop off donation" name="submitEditDDonationForm">';
+        }
+      }  
     //named submit button for ADDING a donation
     } else if(isset($_GET["submitContinueDonationForm"]) || isset($_GET["submitChooseNoBtn"])){
       
