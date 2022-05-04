@@ -91,14 +91,13 @@ if(isset($_GET['submitRequestForm'])){
   $res = $conn->query($getMaxID);
   $row = $res->fetch_assoc();
   $PickID = $row["MAX(PickID)"]; 
-  //Check to see if donor exists already
+  //Check to see if donor exists already  
   $check = "SELECT DonorID, name, phone 
   FROM Donor 
   WHERE name = '".$_GET["requestName"]."' 
   AND phone = '".$_GET["requestPhone"]."'";
   //X debug
   //echo $check;
-  $res = $conn->query($check);
   if($res->num_rows > 0) {
     $row = $res->fetch_assoc();
     $DonorID = $row["DonorID"];

@@ -80,7 +80,7 @@ if(isset($_GET["submitAddDonationsForm"])){
       //Check type
       $dtype = "SELECT PickID
       FROM Don 
-      WHERE DonID ='".$_GET["ocode"]."'";
+      WHERE DonID ='".$row["DonID"]."'";
 
       $subres = $conn->query($dtype);
 
@@ -90,13 +90,13 @@ if(isset($_GET["submitAddDonationsForm"])){
       $subrow = $subres->fetch_assoc();
 
       //If Pickup Donation
-      if ($subrow["PickID"] == NULL) {   
-        $isPickup = TRUE;
-        $donType="Pick up";
-      //If Dropoff Donation
-      } else {
+      if ($subrow["PickID"] === NULL) {   
         $isPickup = FALSE;
         $donType="Drop off";
+      //If Dropoff Donation
+      } else {
+        $isPickup = TRUE;
+        $donType="Pick up";
       }
 
       if($n%2==0){
