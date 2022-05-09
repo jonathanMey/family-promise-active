@@ -4,7 +4,7 @@ $current = basename($_SERVER['PHP_SELF']);
 $active = basename($_SERVER['PHP_SELF']);
 include 'header.php';
 //$addDonor;
-//ACTION: Submit EDIT donation form
+//ACTION: Submit EDIT pick up donation form
 if (isset($_GET["submitEditPDonationForm"])){
   
   $combinedDTR = date('Y-m-d H:i:s', strtotime($_GET["rDate"]." ".$_GET["rTime"]));
@@ -45,7 +45,7 @@ if (isset($_GET["submitEditPDonationForm"])){
 
 }
 
-//ACTION: Submit EDIT donation form
+//ACTION: Submit EDIT drop off donation form
 if(isset($_GET["submitEditDDonationForm"])) {
 
   $combinedDT = date('Y-m-d H:i:s', strtotime($_GET["wDate"]." ".$_GET["wTime"]));
@@ -87,7 +87,7 @@ if(isset($_GET["submitAddDonationForm"])){
   '".$combinenowtime."')";
 
   //X debug
-  //echo $sql;
+  echo $sql;
   
   $conn->query($sql);
 
@@ -97,7 +97,7 @@ if(isset($_GET["submitAddDonationForm"])){
   $res = $conn->query($check);
 
   //X debug 
-  //echo $check;
+  echo $check;
   
   if($res->num_rows > 0) {
     $row = $res->fetch_assoc();
@@ -119,7 +119,7 @@ if(isset($_GET["submitAddDonationForm"])){
     CASE WHEN '".$_GET["addDonorNotes"]."' = '' THEN NULL ELSE '".$_GET["addDonorNotes"]."' END)";
   
     //X debug   
-    //echo $sql;
+    echo $sql;
 
     $conn->query($sql);
     
@@ -141,7 +141,7 @@ if(isset($_GET["submitAddDonationForm"])){
   '".$_SESSION["UserID"]."', 
   '".$DonDetailsID."')";
   //X debug   
-  //echo $sql;
+  echo $sql;
   //echo 'UserID: '.$_SESSION["UserID"];
   $conn->query($sql);
 
@@ -408,7 +408,7 @@ if(isset($_GET["ocode"])) {
                 //run the query
                 $res = $conn->query($sql);
                 while ($row = $res->fetch_assoc()) {
-                  echo '<option value="'.$row["city"].'" label="'.$row["name"].'\n'.$row["state"].'"></option>';
+                  echo '<option value="'.$row["city"].'" label="'.$row["name"].'\n'.$row["city"].'"></option>';
                 }
                 echo '</datalist>';
 
@@ -689,7 +689,7 @@ if(isset($_GET["ocode"])) {
     }
 
     //named submit button Submitting for editing a donation
-    if (isset($_GET["ocode"]) || isset($_GET["submitContinueDonationForm"])){
+    if (isset($_GET["ocode"])){
       if($isPickup) {
         //Admin & Employee
         if($_SESSION['Accesslvl'] == 4 || $_SESSION['Accesslvl'] == 2 ) {

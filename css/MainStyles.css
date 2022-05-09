@@ -482,6 +482,22 @@ All View Forms
   .requestPickup-body {
     font-size: .8em;
     font-weight: lighter;
+    /*
+      .time-container {
+        h3 {
+          display: none;
+        }
+        display: flex;     
+        label {
+          top: 0;
+          margin-top: .8em;
+        }
+        input {
+          margin: .3em .3em 0 .3em;
+        }
+        //position: absolute;
+      }
+    */
   }
   .requestPickup-body .form-section {
     width: 95%;
@@ -517,21 +533,6 @@ All View Forms
     width: auto;
     left: 0;
     top: 0;
-  }
-  .requestPickup-body .time-container {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-  }
-  .requestPickup-body .time-container h3 {
-    display: none;
-  }
-  .requestPickup-body .time-container label {
-    top: 0;
-    margin-top: .8em;
-  }
-  .requestPickup-body .time-container input {
-    margin: .3em .3em 0 .3em;
   }
   .requestPickup-body img {
     display: none;

@@ -12,7 +12,6 @@ include 'header.php';
         <ul>
           <?php 
 
-
           //admin level access = 1
           if($_SESSION["Account"] == 1){
             echo '<a href="addReportForm.php"><li class="section-right"><img src="Images/reportIcon.png" alt="Create Report"><h2>Create Report</h2></li></a>';
@@ -25,7 +24,6 @@ include 'header.php';
           //truck level access = 2
           } elseif($_SESSION["Account"] == 2) {
             echo '<a href="viewPickupPage.php"><li class="section-left"><img src="Images/formIcon.png" alt="Access Pickups"><h2>Access Pickups</h2></li></a>';
-            echo '<a href="viewSchedulePage.php"><li class="section-right"><img src="Images/scheduleIcon.png" alt="View Schedule"><h2>View Schedule</h2></li></a>';
             echo '<a href="changeStatus.php"><li class="section-left"><img src="Images/formIcon.png" alt="Access Pickups"><h2>Active Pickups</h2></li></a>';
           //volunteer level access = 4
           } elseif($_SESSION["Account"] == 4) {
@@ -34,12 +32,6 @@ include 'header.php';
             echo '<a href="addDonorForm.php"><li class="section-right"><img src="Images/donorIcon.png" alt="Record Donor"><h2>Record Donor</h2></li></a>';
           }
 
-
-
-          
-       
-              
-     
           ?>
         </ul>
       </div>
